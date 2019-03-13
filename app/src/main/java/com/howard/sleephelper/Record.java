@@ -2,6 +2,7 @@ package com.howard.sleephelper;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
 
@@ -13,6 +14,8 @@ import android.widget.Toast;
 
 import com.howard.sleephelper.RecyclerView.Trace;
 import com.howard.sleephelper.RecyclerView.TraceListAdapter;
+import com.howard.sleephelper.sleepRecord.DaoMaster;
+import com.howard.sleephelper.sleepRecord.DaoSession;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

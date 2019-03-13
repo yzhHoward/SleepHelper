@@ -2,20 +2,22 @@ package com.howard.sleephelper.sleepRecord;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
 
 @Entity
 public class Bean {
-    int id;
-    String date;//格式：yyyy:mm:dd
-    String startTime;//格式：hh:mm
-    String endTime;
-    String totalTime;
-    String deepTime;
-    String swallowTime;
-    String awakeTime;
-    String sleepDetail;//格式："dayOfYear*24*60+hour*60+minute 传感器参数,"
-    @Generated(hash = 33248262)
-    public Bean(int id, String date, String startTime, String endTime,
+    @Id(autoincrement = true)
+    private Long id;
+    private String date;//格式：yyyy:mm:dd
+    private String startTime;//格式：hh:mm
+    private String endTime;
+    private String totalTime;
+    private String deepTime;
+    private String swallowTime;
+    private String awakeTime;
+    private String sleepDetail;//格式："dayOfYear*24*60+hour*60+minute 传感器参数,"
+    @Generated(hash = 529597846)
+    public Bean(Long id, String date, String startTime, String endTime,
             String totalTime, String deepTime, String swallowTime, String awakeTime,
             String sleepDetail) {
         this.id = id;
@@ -31,10 +33,10 @@ public class Bean {
     @Generated(hash = 80546095)
     public Bean() {
     }
-    public int getId() {
+    public Long getId() {
         return this.id;
     }
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
     public String getDate() {
