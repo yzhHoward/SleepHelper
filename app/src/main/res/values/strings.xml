@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">睡眠助手</string>
+    <string name="start">开始记录</string>
+    <string name="time">0 : 0 : 0</string>
+    <string name="runtime">%1$d : %2$d</string>
+</resources>

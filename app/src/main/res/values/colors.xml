@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="colorWhite">#ffffff</color>
+    <color name="txt_black_light">#333333</color>
+    <color name="bg_white">#FFFFFF</color>
+    <color name="bg_blue">#58ACED</color>
+    <color name="text_yellow">#FFC800</color>
+
+    <color name="GREEN">#FF00FF00</color>
+    <color name="RED">#FFFF0000</color>
+    <color name="PointerColor">#C9DEEE</color>
+    <color name="Yellow">#FFFFFF00</color>
+
+    <color name="series_not_end">#fffec500</color>
+    <color name="sienna">#ffa0522d</color>
+    <color name="silver">#c0c0c0</color>
+    <color name="skyblue">#ff87ceeb</color>
+    <color name="slateblue">#ff6a5acd</color>
+    <color name="slategray">#ff708090</color>
+    <color name="textColor">#666666</color>
+    <color name="shadow">#dfdfdf</color>
+    <color name="scale">#58000000</color>
+    <color name="leftRight">#e1dcd6</color>
+    <color name="rightRight">#f4efe9</color>
+    <color name="outsideBlue">#2690f8</color>
+    <color name="insideBlue">#58ade5</color>
+    <color name="white">#FFFFFF</color>
+    <color name="insideCircle">#c2b9b0</color>
+
+    <color name="blue">#2A8EE3</color>
+    <color name="transparent_gray">#50A8A8A8</color>
+    <color name="orange">#FFE8A140</color>
+    <color name="green">#83d383</color>
+
+    <color name="Pie_Green">#66CDAA</color>
+    <color name="Pie_Blue">#6495ED</color>
+    <color name="Pie_Yellow">#EEB422</color>
+
+    <color name="Style_Color">#191970</color>
+
+</resources>
