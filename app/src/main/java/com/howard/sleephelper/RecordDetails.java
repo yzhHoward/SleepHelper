@@ -64,17 +64,17 @@ public class RecordDetails extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.record_details);
-        lineChart = (LineChart) findViewById(R.id.lineChart);
-        mPieChart = (PieChart) findViewById(R.id.mPiechart);
-        btn_left = (Button) findViewById(R.id.left);
-        btn_right = (Button) findViewById(R.id.right);
-        mDate = (TextView) findViewById(R.id.date);
-        mStartTime = (TextView) findViewById(R.id.startTime);
-        mStopTime = (TextView) findViewById(R.id.stopTime);
-        mSleepTime = (TextView) findViewById(R.id.sleepTime);
-        mDeep = (TextView) findViewById(R.id.deep);
-        mSwallow = (TextView) findViewById(R.id.swallow);
-        mDream = (TextView) findViewById(R.id.dream);
+        lineChart = findViewById(R.id.lineChart);
+        mPieChart = findViewById(R.id.mPiechart);
+        btn_left = findViewById(R.id.left);
+        btn_right = findViewById(R.id.right);
+        mDate = findViewById(R.id.date);
+        mStartTime = findViewById(R.id.startTime);
+        mStopTime = findViewById(R.id.stopTime);
+        mSleepTime = findViewById(R.id.sleepTime);
+        mDeep = findViewById(R.id.deep);
+        mSwallow = findViewById(R.id.swallow);
+        mDream = findViewById(R.id.dream);
 
         readLog();
         max = cur - 1;
@@ -179,7 +179,8 @@ public class RecordDetails extends Activity {
         String t1 = "stop";
         String t2 = "date";
         try {
-            BufferedReader bfr = new BufferedReader(new FileReader(Environment.getExternalStorageDirectory().getPath() + "/sleep_record.log"));
+            BufferedReader bfr = new BufferedReader(new FileReader(
+                    Environment.getExternalStorageDirectory().getPath() + "/sleep_record.log"));
             String line = bfr.readLine();
             while (line != null) {
                 arr = line.split(" ");
