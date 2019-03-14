@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.List;
+import java.util.Locale;
 
 import static android.content.ContentValues.TAG;
 
@@ -27,9 +28,8 @@ public class GetRecord {
 
     //增
     public Bean insertData(String date, String startTime) {
-        Bean mRecord = new Bean(null, date, startTime, startTime,
-                "0", "0", "0", "0",
-                null);
+        Bean mRecord = new Bean(null, date, startTime, startTime, 0,
+                false, 0, 0, 0, "");
         try {
             beanDao.insert(mRecord);
         } catch (Exception e) {
@@ -49,25 +49,32 @@ public class GetRecord {
 
     //改
     public void update(Bean mRecord, String sleepDetail) {
-//        Bean mRecord = beanDao.queryBuilder().where(BeanDao.Properties.Id.eq(id)).build().unique();
-        if(mRecord!=null) {
-            mRecord.setSleepDetail(mRecord.getSleepDetail()+sleepDetail);
+        if (mRecord != null) {
+            mRecord.setSleepDetail(mRecord.getSleepDetail() + sleepDetail);
             beanDao.update(mRecord);
         }
     }
 
-    public void finalUpdate(Bean mRecord, String sleepDetail) {
-//        Bean mRecord = beanDao.queryBuilder().where(BeanDao.Properties.Id.eq(id)).build().unique();
-        int startTime = Integer.parseInt(mRecord.getStartTime());
-        //TODO: 增加其他几个数据
-        if(mRecord!=null) {
-            mRecord.setSleepDetail(mRecord.getSleepDetail()+sleepDetail);
-            beanDao.update(mRecord);
+    public void finalUpdate(Bean mRecord, int endHour, int endMin, long totalTime,
+                            int deepTime, int swallowTime, int awakeTime) {
+        totalTime /= 1000 * 60;
+        if (totalTime>1) {
+            mRecord.setDrawChart(true);
         }
+        mRecord.setEndTime(String.format(Locale.getDefault(), "%02d:%02d", endHour, endMin));
+        mRecord.setTotalTime((int)totalTime);
+        mRecord.setDeepTime(deepTime);
+        mRecord.setSwallowTime(swallowTime);
+        mRecord.setAwakeTime(awakeTime);
+        beanDao.update(mRecord);
     }
 
     //查
     public List queryAllList() {
         return beanDao.queryBuilder().list();
+    }
+
+    public Bean getRecordById(long id) {
+        return beanDao.queryBuilder().where(BeanDao.Properties.Id.eq(id)).build().unique();
     }
 }

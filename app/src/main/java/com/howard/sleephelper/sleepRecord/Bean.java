@@ -11,20 +11,22 @@ public class Bean {
     private String date;//格式：yyyy:mm:dd
     private String startTime;//格式：hh:mm
     private String endTime;
-    private String totalTime;
-    private String deepTime;
-    private String swallowTime;
-    private String awakeTime;
+    private int totalTime;
+    private boolean drawChart;
+    private int deepTime;
+    private int swallowTime;
+    private int awakeTime;
     private String sleepDetail;//格式："dayOfYear*24*60+hour*60+minute 传感器参数,"
-    @Generated(hash = 529597846)
+    @Generated(hash = 785237661)
     public Bean(Long id, String date, String startTime, String endTime,
-            String totalTime, String deepTime, String swallowTime, String awakeTime,
-            String sleepDetail) {
+            int totalTime, boolean drawChart, int deepTime, int swallowTime,
+            int awakeTime, String sleepDetail) {
         this.id = id;
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
         this.totalTime = totalTime;
+        this.drawChart = drawChart;
         this.deepTime = deepTime;
         this.swallowTime = swallowTime;
         this.awakeTime = awakeTime;
@@ -57,28 +59,34 @@ public class Bean {
     public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
-    public String getTotalTime() {
+    public int getTotalTime() {
         return this.totalTime;
     }
-    public void setTotalTime(String totalTime) {
+    public void setTotalTime(int totalTime) {
         this.totalTime = totalTime;
     }
-    public String getDeepTime() {
+    public boolean getDrawChart() {
+        return this.drawChart;
+    }
+    public void setDrawChart(boolean drawChart) {
+        this.drawChart = drawChart;
+    }
+    public int getDeepTime() {
         return this.deepTime;
     }
-    public void setDeepTime(String deepTime) {
+    public void setDeepTime(int deepTime) {
         this.deepTime = deepTime;
     }
-    public String getSwallowTime() {
+    public int getSwallowTime() {
         return this.swallowTime;
     }
-    public void setSwallowTime(String swallowTime) {
+    public void setSwallowTime(int swallowTime) {
         this.swallowTime = swallowTime;
     }
-    public String getAwakeTime() {
+    public int getAwakeTime() {
         return this.awakeTime;
     }
-    public void setAwakeTime(String awakeTime) {
+    public void setAwakeTime(int awakeTime) {
         this.awakeTime = awakeTime;
     }
     public String getSleepDetail() {
@@ -87,4 +95,5 @@ public class Bean {
     public void setSleepDetail(String sleepDetail) {
         this.sleepDetail = sleepDetail;
     }
+    
 }

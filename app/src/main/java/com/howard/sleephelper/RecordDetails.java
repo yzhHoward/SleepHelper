@@ -25,12 +25,15 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.howard.sleephelper.sleepRecord.Bean;
+import com.howard.sleephelper.sleepRecord.GetRecord;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 详细的记录页面
@@ -51,7 +54,10 @@ public class RecordDetails extends Activity {
     TextView mDream;
 
     private int cur;
+    private int idx;
     private int max;
+    private int month;
+    private int day;
     private float[][] record = new float[20][1200];
     private int[][] level = new int[20][3];
     private int[][] time = new int[20][1200];
@@ -60,6 +66,10 @@ public class RecordDetails extends Activity {
 
     private boolean left_invisible;
     private boolean right_invisible;
+
+    private List<Bean> records;
+    private Bean mRecord;
+    private GetRecord mGetRecord;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +87,9 @@ public class RecordDetails extends Activity {
         mDream = findViewById(R.id.dream);
 
         readLog();
+        oldReadLog();
         max = cur - 1;
+        idx = this.getIntent().getIntExtra("position", 0);
         cur = this.getIntent().getIntExtra("position", 0);
         initView();
         draw(cur);
@@ -105,18 +117,24 @@ public class RecordDetails extends Activity {
     }
 
     public void draw(int cur) {
-        mDate.setText(specialTime[cur][0] / 31 + "月" + specialTime[cur][0] % 31 + "日");
-        mStartTime.setText("睡觉 " + timeProcess(specialTime[cur][1]));
-        mStopTime.setText("起床 " + timeProcess(specialTime[cur][2]));
-        mSleepTime.setText("时长 " + timeProcess(specialTime[cur][3]));
-        mDeep.setText("深度睡眠 " + timeProcess(level[cur][0]));
-        mSwallow.setText("浅层睡眠 " + timeProcess(level[cur][1]));
-        mDream.setText("醒/梦 " + timeProcess(level[cur][2]));
-        if (size[cur] > 1)
-            drawLineChart(cur);
-        else
+        mDate.setText(String.format(Locale.getDefault(), "%d月%d日", month, day));
+        mStartTime.setText("睡觉 " + mRecord.getStartTime());
+        mStopTime.setText("起床 " + mRecord.getEndTime());
+        mSleepTime.setText(String.format(Locale.getDefault(), "时长 %02d:%02d",
+                mRecord.getTotalTime() / 60, mRecord.getTotalTime() % 60));
+        mDeep.setText(String.format(Locale.getDefault(), "深度睡眠 %02d:%02d",
+                mRecord.getDeepTime() / 60, mRecord.getDeepTime() % 60));
+        mSwallow.setText(String.format(Locale.getDefault(), "浅层睡眠 %02d:%02d",
+                mRecord.getSwallowTime() / 60, mRecord.getSwallowTime() % 60));
+        mDream.setText(String.format(Locale.getDefault(), "醒/梦 %02d:%02d",
+                mRecord.getAwakeTime() / 60, mRecord.getAwakeTime() % 60));
+        if (mRecord.getDrawChart()) {
+            drawLineChart();
+            drawPieChart();
+        } else {
             lineChart.clear();
-        drawPieChart(cur);
+            mPieChart.clear();
+        }
     }
 
     public String timeProcess(int target) {
@@ -137,7 +155,6 @@ public class RecordDetails extends Activity {
 
     //左上的返回
     public void ClickBackDetails(View v) {
-
         Intent i = new Intent();
         i.setClass(RecordDetails.this, Record.class);
         RecordDetails.this.startActivity(i);
@@ -171,6 +188,14 @@ public class RecordDetails extends Activity {
     }
 
     private void readLog() {
+        records = mGetRecord.queryAllList();
+        mRecord = records.get(idx);
+        String arr[] = mRecord.getDate().split("-");
+        month = Integer.parseInt(arr[0]);
+        day = Integer.parseInt(arr[1]);
+    }
+
+    private void oldReadLog() {
         int aTime;
         String arr[];
         String stop = "Stop";

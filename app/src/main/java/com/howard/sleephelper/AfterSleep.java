@@ -9,6 +9,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -17,17 +18,17 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.howard.sleephelper.sleepRecord.Bean;
+import com.howard.sleephelper.sleepRecord.GetRecord;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 /**
  * 结束记录的界面
  */
 public class AfterSleep extends Activity {
-
-    private int[] record = new int[6];
 
     RelativeLayout background;
     TextView mTime;
@@ -38,60 +39,56 @@ public class AfterSleep extends Activity {
     TextView mSwallow;
     TextView mDream;
 
+    private Bean mRecord;
+    private GetRecord mGetRecord;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.aftersleep);
-        background = (RelativeLayout) findViewById(R.id.aftersleep_background);
-        mPieChart = (PieChart) findViewById(R.id.mPiechart);
-        mTime = (TextView) findViewById(R.id.sleepTime);
-        mStartTime = (TextView) findViewById(R.id.startTime);
-        mStopTime = (TextView) findViewById(R.id.stopTime);
-        mDeep = (TextView) findViewById(R.id.deep);
-        mSwallow = (TextView) findViewById(R.id.swallow);
-        mDream = (TextView) findViewById(R.id.dream);
+        background = findViewById(R.id.aftersleep_background);
+        mPieChart = findViewById(R.id.mPiechart);
+        mTime = findViewById(R.id.sleepTime);
+        mStartTime = findViewById(R.id.startTime);
+        mStopTime = findViewById(R.id.stopTime);
+        mDeep = findViewById(R.id.deep);
+        mSwallow = findViewById(R.id.swallow);
+        mDream = findViewById(R.id.dream);
 
+        //随机背景
         int array[] = {R.drawable.bg_1, R.drawable.bg_4, R.drawable.bg_5};
         Random rnd = new Random();
         int index = rnd.nextInt(3);
         Resources resources = getBaseContext().getResources();
         Drawable cur = resources.getDrawable(array[index]);
         background.setBackground(cur);
-
-        record = this.getIntent().getIntArrayExtra("record");
+        long recordId = this.getIntent().getLongExtra("recordId", 0);
+        mRecord = mGetRecord.getRecordById(recordId);
         initView();
     }
 
     //设置文本
     protected void initView() {
-        mStartTime.setText("睡觉 " + timeProcess(record[1]));
-        mStopTime.setText("起床 " + timeProcess(record[2]));
-        mTime.setText("时长 " + timeProcess(record[0]));
-        mDeep.setText("深度睡眠 " + timeProcess(record[3]));
-        mSwallow.setText("浅层睡眠 " + timeProcess(record[4]));
-        mDream.setText("醒/梦 " + timeProcess(record[5]));
-        mPieChart.setNoDataText("睡眠时间太短啦！没有足够数据！");
-        mPieChart.setNoDataTextColor(Color.WHITE);
-        //画空心饼状图
-        if (record[0] > 1)
-            drawChart();
-    }
-
-    //记录时间的
-    public String timeProcess(int target) {
-        int Hour = target / 60;
-        int Min = target % 60;
-        if (Hour < 10) {
-            if (Min < 10)
-                return "0" + Hour + ":0" + Min;
-            else
-                return "0" + Hour + ":" + Min;
+        if (mRecord != null) {
+            mStartTime.setText("睡觉 " + mRecord.getStartTime());
+            mStopTime.setText("起床 " + mRecord.getEndTime());
+            mTime.setText(String.format(Locale.getDefault(), "时长 %02d:%02d",
+                    mRecord.getTotalTime() / 60, mRecord.getTotalTime() % 60));
+            mDeep.setText(String.format(Locale.getDefault(), "深度睡眠 %02d:%02d",
+                    mRecord.getDeepTime() / 60, mRecord.getDeepTime() % 60));
+            mSwallow.setText(String.format(Locale.getDefault(), "浅层睡眠 %02d:%02d",
+                    mRecord.getSwallowTime() / 60, mRecord.getSwallowTime() % 60));
+            mDream.setText(String.format(Locale.getDefault(), "醒/梦 %02d:%02d",
+                    mRecord.getAwakeTime() / 60, mRecord.getAwakeTime() % 60));
+            mPieChart.setNoDataText("睡眠时间太短啦！没有足够数据！");
+            mPieChart.setNoDataTextColor(Color.WHITE);
+            //画空心饼状图
+            if (mRecord.getDrawChart()) {
+                drawChart();
+            }
         } else {
-            if (Min < 10)
-                return Hour + ":0" + Min;
-            else
-                return Hour + ":" + Min;
+            Toast.makeText(this, "数据错误", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -126,9 +123,9 @@ public class AfterSleep extends Activity {
         mPieChart.setRotationEnabled(true);
         mPieChart.setHighlightPerTapEnabled(false);
         ArrayList<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(record[3], "深度睡眠"));
-        entries.add(new PieEntry(record[4], "浅层睡眠"));
-        entries.add(new PieEntry(record[5], "醒/梦"));
+        entries.add(new PieEntry(mRecord.getDeepTime(), "深度睡眠"));
+        entries.add(new PieEntry(mRecord.getSwallowTime(), "浅层睡眠"));
+        entries.add(new PieEntry(mRecord.getAwakeTime(), "醒/梦"));
 
         PieDataSet dataSet = new PieDataSet(entries, "");
         dataSet.setSliceSpace(3f);

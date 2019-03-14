@@ -27,10 +27,10 @@ public class TraceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mDate = (TextView) itemView.findViewById(R.id.Date);
-            mTime = (TextView) itemView.findViewById(R.id.Time);
-            mTopLine = (TextView) itemView.findViewById(R.id.TopLine);
-            mDot = (ImageView) itemView.findViewById(R.id.Dot);
+            mDate = itemView.findViewById(R.id.Date);
+            mTime = itemView.findViewById(R.id.Time);
+            mTopLine = itemView.findViewById(R.id.TopLine);
+            mDot = itemView.findViewById(R.id.Dot);
         }
 
         public void bindHolder(Trace trace) {
@@ -63,8 +63,8 @@ public class TraceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             itemHolder.mDot.setBackgroundResource(R.drawable.timeline);
         }
         itemHolder.bindHolder(traceList.get(position));
-        final TextView tv1 = (TextView) holder.itemView.findViewById(R.id.Date);
-        final TextView tv2 = (TextView) holder.itemView.findViewById(R.id.Time);
+        final TextView tv1 = holder.itemView.findViewById(R.id.Date);
+        final TextView tv2 = holder.itemView.findViewById(R.id.Time);
         tv1.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -98,7 +98,7 @@ public class TraceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private OnItemClickListener mOnItemClickListener;
 
-    public void setmOnItemClickListener(OnItemClickListener mOnItemClickListener) {
+    public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {
         this.mOnItemClickListener = mOnItemClickListener;
     }
 }

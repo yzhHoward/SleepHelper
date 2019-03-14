@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -21,10 +20,8 @@ import com.howard.sleephelper.sleepRecord.Bean;
 import com.howard.sleephelper.sleepRecord.GetRecord;
 import com.howard.sleephelper.utils.JobSchedulerManager;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -37,27 +34,25 @@ public class Sleep extends Activity {
     RelativeLayout background;
 
     private int time = 0;
-    private int[] record = new int[6];
     private int timeHour;
     private int timeMin;
     private int timeSec;
-
+    private long startTime;
 
     private Timer mRunTimer;
-    Sensors sensor;
-
+    private Sensors sensor;
+    private Bean mRecord;
+    private GetRecord newRecord;
     //private JobSchedulerManager mJobManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sleep);
-
         //mJobManager = JobSchedulerManager.getJobSchedulerInstance(this);
         //mJobManager.startJobScheduler();
-
         initView();
-        initData();
+        startTime = initData();
     }
 
     //界面初始化
@@ -66,6 +61,7 @@ public class Sleep extends Activity {
         Clock = findViewById(R.id.mRunTime);
         Clock.setTypeface(typeface);
 
+        //设置随机背景
         background = findViewById(R.id.sleep_background);
         int array[] = {R.drawable.bg_2, R.drawable.bg_3, R.drawable.bg_6, R.drawable.bg_7};
         Random rnd = new Random();
@@ -76,21 +72,14 @@ public class Sleep extends Activity {
     }
 
     //开始记录数据
-    public void initData() {
-        int timeStart;
+    public long initData() {
         boolean reStart;
-        Bean mRecord;
-        GetRecord newRecord = new GetRecord();
+        newRecord = new GetRecord();
         Calendar calendar = Calendar.getInstance();
-        int timeDay = calendar.get(Calendar.DAY_OF_YEAR);
-        timeHour = calendar.get(Calendar.HOUR_OF_DAY);
-        timeMin = calendar.get(Calendar.MINUTE);
-        timeSec = calendar.get(Calendar.SECOND);
-        timeStart = timeHour * 60 + timeMin;
-        mRecord = newRecord.insertData(String.valueOf(calendar.get(Calendar.YEAR)) + ":"
-                + String.valueOf(calendar.get(Calendar.MONTH)) + ":"
-                + String.valueOf(calendar.get(Calendar.DATE)),
-                String.valueOf(timeHour) + ":" + String.valueOf(timeMin));
+        mRecord = newRecord.insertData(String.valueOf(calendar.get(Calendar.MONTH)) + "-"
+                        + String.valueOf(calendar.get(Calendar.DATE)),
+                String.format(Locale.getDefault(), "%02d:%02d",
+                        calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)));
         //TODO: 写一下reStart的情况（程序意外退出）
 //        reStart = this.getIntent().getBooleanExtra("restart", false);
 //        //注意：若启用mJobManager则需要重新调整reStart内容
@@ -100,32 +89,31 @@ public class Sleep extends Activity {
 //            //startGrayService();
 //        }
         sensor = new Sensors(this, mRecord);
-//        getSensorManager();
-//        startSensor();
         startRunTimer();
         //startPlayMusicService();
         startDaemonService();
-        record[1] = timeStart;
+        return calendar.getTimeInMillis();
     }
 
     //按钮
     public void onRunningClick2(View v) {
         Toast.makeText(this, "停止记录！", Toast.LENGTH_SHORT).show();
-        sensor.stopSensor();
+        int[] details = sensor.stopSensor();
+        int deepTime = details[0];
+        int swallowTime = details[1];
+        int awakeTime = details[2];
         Calendar calendar = Calendar.getInstance();
-        int timeStop = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE);
-        record[2] = timeStop;
-//        writeLog(" t time " + String.valueOf(time / 60));
-//        writeLog(" t stop " + String.valueOf(timeStop));
-//        writeLog(" Stop");
-        record[0] = time / 60;
+        if (mRecord != null) {
+            newRecord.finalUpdate(mRecord, calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE),
+                    calendar.getTimeInMillis() - startTime, deepTime, swallowTime, awakeTime);
+        }
         stopRunTimer();
-        //stopPlayMusicService();
         stopDaemonService();
+        //stopPlayMusicService();
         //stopGrayService();
         Intent i = new Intent();
         i.setClass(Sleep.this, AfterSleep.class);
-        i.putExtra("record", record);
+        i.putExtra("recordId", mRecord.getId());
         Sleep.this.startActivity(i);
         Sleep.this.finish();
     }
@@ -138,9 +126,6 @@ public class Sleep extends Activity {
         }
         return super.onKeyDown(keyCode, event);
     }
-
-    //传感器，下面的都是垃圾算法
-
 
     //计时器
     //TODO: 有问题，需要重写
@@ -229,13 +214,6 @@ public class Sleep extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        /*if (mSensorManager != null) {
-            writeLog(" t time " + String.valueOf(time / 60));
-            Calendar calendar = Calendar.getInstance();
-            timeStop = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE);
-            writeLog(" t stop " + String.valueOf(timeStop));
-            writeLog(" Stop");
-        }*/
         sensor.stopSensor();
         stopRunTimer();
 //        stopPlayMusicService();
