@@ -40,7 +40,7 @@ public class DrawLineChart {
         mLineChart.setScaleEnabled(true);
         mLineChart.setPinchZoom(true);
         mLineChart.getDescription().setEnabled(false);
-        //画空心饼状图
+        //画折线图
         if (mRecord.getDrawChart()) {
             this.mResources = mResources;
             this.mRecord = mRecord;
@@ -110,7 +110,7 @@ public class DrawLineChart {
         limitLine.setTextColor(mResources.getColor(R.color.Pie_Green));
         leftYAxis.addLimitLine(limitLine);
 
-        LimitLine limitLine1 = new LimitLine(1.2f, "浅层睡眠");
+        LimitLine limitLine1 = new LimitLine(0.8f, "浅层睡眠");
         limitLine1.setLineColor(mResources.getColor(R.color.Pie_Blue));
         limitLine1.setTextColor(mResources.getColor(R.color.Pie_Blue));
         leftYAxis.addLimitLine(limitLine1);

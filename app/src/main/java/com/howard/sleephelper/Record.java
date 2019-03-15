@@ -16,7 +16,6 @@ import com.howard.sleephelper.sleepRecord.Bean;
 import com.howard.sleephelper.sleepRecord.GetRecord;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -42,7 +41,6 @@ public class Record extends Activity {
     private void initData() {
         GetRecord mGetRecord = new GetRecord(this);
         List<Bean> records = mGetRecord.queryAllList();
-        Collections.reverse(records);
         for (Bean e : records) {
             traceList.add(new Trace(e.getDate(), e.getStartTime() + "-" + e.getEndTime()
                     + "  " + e.getTotalTime() / 60 + "时" + e.getTotalTime() % 60 + "分"));

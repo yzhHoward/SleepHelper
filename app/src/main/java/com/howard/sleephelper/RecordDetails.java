@@ -14,7 +14,6 @@ import com.howard.sleephelper.drawChart.DrawPieChart;
 import com.howard.sleephelper.sleepRecord.Bean;
 import com.howard.sleephelper.sleepRecord.GetRecord;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -140,9 +139,8 @@ public class RecordDetails extends Activity {
     private void readLog() {
         GetRecord mGetRecord = new GetRecord(this);
         records = mGetRecord.queryAllList();
-        Collections.reverse(records);
         mRecord = records.get(idx);
-        max = records.size();
+        max = records.size() - 1;
         String arr[] = mRecord.getDate().split("-");
         month = Integer.parseInt(arr[0]);
         day = Integer.parseInt(arr[1]);

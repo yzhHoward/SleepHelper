@@ -29,7 +29,7 @@ public class GetRecord {
     //增
     public Bean insertData(String date, String startTime) {
         Bean mRecord = new Bean(null, date, startTime, startTime, 0,
-                false, 0, 0, 0, "");
+                false, 0, 0, 0, "", false);
         try {
             beanDao.insert(mRecord);
         } catch (Exception e) {
@@ -66,15 +66,23 @@ public class GetRecord {
         mRecord.setDeepTime(deepTime);
         mRecord.setSwallowTime(swallowTime);
         mRecord.setAwakeTime(awakeTime);
+        mRecord.setValid(true);
         beanDao.update(mRecord);
     }
 
     //查
     public List queryAllList() {
-        return beanDao.queryBuilder().list();
+        return beanDao.queryBuilder().orderDesc(BeanDao.Properties.Id).list();
     }
 
     public Bean getRecordById(long id) {
         return beanDao.queryBuilder().where(BeanDao.Properties.Id.eq(id)).build().unique();
+    }
+
+    public Bean getLatestRecord() {
+        List<Bean> records =  beanDao.queryBuilder().orderDesc(BeanDao.Properties.Id).list();
+        if(!records.isEmpty())
+            return records.get(0);
+        return null;
     }
 }

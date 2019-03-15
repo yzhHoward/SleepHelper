@@ -15,6 +15,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.howard.sleephelper.sleepRecord.Bean;
+import com.howard.sleephelper.sleepRecord.GetRecord;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -37,7 +40,7 @@ public class MainActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        myPermission();
+        //myPermission();
         readLog();
         initView();
     }
@@ -100,36 +103,19 @@ public class MainActivity extends Activity {
         return super.onKeyDown(keyCode, event);
     }
 
-    //读睡眠记录，需要重写
+    //读睡眠记录，判断是否异常退出
     private void readLog() {
-        String arr[];
-        try {
-            BufferedReader bfr = new BufferedReader(new FileReader(
-                    Environment.getExternalStorageDirectory().getPath() + "/sleep_record.log"));
-            String line = null;
-            String lastLine = null;
-            while (true) {
-                lastLine = line;
-                if ((line = bfr.readLine()) == null) {
-                    try {
-                        if (lastLine != null) {
-                            arr = lastLine.split(" ");
-                            if (!arr[1].equals("Stop")) {
-                                bfr.close();
-                                Intent i = new Intent();
-                                i.setClass(MainActivity.this, Sleep.class);
-                                i.putExtra("restart", true);
-                                MainActivity.this.startActivity(i);
-                                MainActivity.this.finish();
-                            }
-                        }
-                    } catch (IOException ignored) {
-                    }
-                    break;
-                }
+        Bean mRecord;
+        GetRecord mGetRecord = new GetRecord(this);
+        mRecord = mGetRecord.getLatestRecord();
+        if (mRecord != null) {
+            if (!mRecord.getValid()) {
+                Intent i = new Intent();
+                i.setClass(MainActivity.this, Sleep.class);
+                i.putExtra("restart", true);
+                MainActivity.this.startActivity(i);
+                MainActivity.this.finish();
             }
-            bfr.close();
-        } catch (IOException ignored) {
         }
     }
 

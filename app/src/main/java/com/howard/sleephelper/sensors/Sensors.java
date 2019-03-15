@@ -22,12 +22,13 @@ public class Sensors {
     private Sensor Accelerometer;
 //    private Sensor Gyroscope;
     private Bean mRecord;
-    private GetRecord writeRecord;
+    private GetRecord mGetRecord;
 
     public Sensors(Context context, Bean mRecord) {
         getSensorManager(context);
         startSensor();
         this.mRecord = mRecord;
+        mGetRecord = new GetRecord(context);
     }
 
     private SensorEventListener listener = new SensorEventListener() {
@@ -55,7 +56,7 @@ public class Sensors {
                         ++deepTime;
                     if (k >= 10)
                         k /= 10;
-                    writeRecord.update(mRecord, getTime()+","+k+" ");
+                    mGetRecord.update(mRecord, getTime()+","+k+" ");
                     k = 0;
                 }
             }

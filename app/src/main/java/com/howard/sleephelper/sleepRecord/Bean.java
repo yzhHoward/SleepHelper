@@ -17,10 +17,11 @@ public class Bean {
     private int swallowTime;
     private int awakeTime;
     private String sleepDetail;//格式："dayOfYear*24*60+hour*60+minute 传感器参数,"
-    @Generated(hash = 785237661)
+    private boolean valid;
+    @Generated(hash = 60515970)
     public Bean(Long id, String date, String startTime, String endTime,
             int totalTime, boolean drawChart, int deepTime, int swallowTime,
-            int awakeTime, String sleepDetail) {
+            int awakeTime, String sleepDetail, boolean valid) {
         this.id = id;
         this.date = date;
         this.startTime = startTime;
@@ -31,6 +32,7 @@ public class Bean {
         this.swallowTime = swallowTime;
         this.awakeTime = awakeTime;
         this.sleepDetail = sleepDetail;
+        this.valid = valid;
     }
     @Generated(hash = 80546095)
     public Bean() {
@@ -95,5 +97,10 @@ public class Bean {
     public void setSleepDetail(String sleepDetail) {
         this.sleepDetail = sleepDetail;
     }
-    
+    public boolean getValid() {
+        return this.valid;
+    }
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
 }

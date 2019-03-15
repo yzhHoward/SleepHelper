@@ -18,7 +18,6 @@ import com.howard.sleephelper.service.GrayService;
 import com.howard.sleephelper.service.PlayerMusicService;
 import com.howard.sleephelper.sleepRecord.Bean;
 import com.howard.sleephelper.sleepRecord.GetRecord;
-import com.howard.sleephelper.utils.JobSchedulerManager;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -33,16 +32,14 @@ public class Sleep extends Activity {
     TextView Clock;
     RelativeLayout background;
 
-    private int time = 0;
     private int timeHour;
     private int timeMin;
-    private int timeSec;
     private long startTime;
 
     private Timer mRunTimer;
     private Sensors sensor;
     private Bean mRecord;
-    private GetRecord newRecord;
+    private GetRecord mGetRecord;
     //private JobSchedulerManager mJobManager;
 
     @Override
@@ -73,25 +70,24 @@ public class Sleep extends Activity {
 
     //开始记录数据
     public long initData() {
-        boolean reStart;
-        newRecord = new GetRecord(this);
+        boolean restart;
+        restart = this.getIntent().getBooleanExtra("restart", false);
+        mGetRecord = new GetRecord(this);
         Calendar calendar = Calendar.getInstance();
-        mRecord = newRecord.insertData(String.valueOf(calendar.get(Calendar.MONTH)) + "-"
+        //注意：若启用mJobManager则需要重新调整reStart内容
+        if (restart) {
+            sensor = new Sensors(this, mGetRecord.getLatestRecord());
+            //startGrayService();
+            return calendar.getTimeInMillis();
+        }
+        mRecord = mGetRecord.insertData(String.valueOf(calendar.get(Calendar.MONTH)) + "-"
                         + String.valueOf(calendar.get(Calendar.DATE)),
                 String.format(Locale.getDefault(), "%02d:%02d",
                         calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)));
-        //TODO: 写一下reStart的情况（程序意外退出）
-//        reStart = this.getIntent().getBooleanExtra("restart", false);
-//        //注意：若启用mJobManager则需要重新调整reStart内容
-//        if (!reStart) {
-//            writeLog(" t date " + String.valueOf(timeMonth * 31 + timeDay));
-//            writeLog(" t start " + String.valueOf(timeStart));
-//            //startGrayService();
-//        }
         sensor = new Sensors(this, mRecord);
         startRunTimer();
         //startPlayMusicService();
-        startDaemonService();
+//        startDaemonService();
         return calendar.getTimeInMillis();
     }
 
@@ -104,11 +100,11 @@ public class Sleep extends Activity {
         int awakeTime = details[2];
         Calendar calendar = Calendar.getInstance();
         if (mRecord != null) {
-            newRecord.finalUpdate(mRecord, calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE),
+            mGetRecord.finalUpdate(mRecord, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
                     calendar.getTimeInMillis() - startTime, deepTime, swallowTime, awakeTime);
         }
         stopRunTimer();
-        stopDaemonService();
+//        stopDaemonService();
         //stopPlayMusicService();
         //stopGrayService();
         Intent i = new Intent();
@@ -133,18 +129,12 @@ public class Sleep extends Activity {
         TimerTask mTask = new TimerTask() {
             @Override
             public void run() {
-                ++time;
-                ++timeSec;
-                if (timeSec == 60) {
-                    timeSec = 0;
-                    timeMin++;
-                }
+                ++timeMin;
                 if (timeMin == 60) {
                     timeMin = 0;
                     timeHour++;
                 }
                 if (timeHour == 24) {
-                    timeSec = 0;
                     timeMin = 0;
                     timeHour = 0;
                 }
@@ -152,23 +142,13 @@ public class Sleep extends Activity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (timeHour < 10) {
-                            if (timeMin < 10)
-                                Clock.setText(String.format("0" + timeHour + ":0" + timeMin));
-                            else
-                                Clock.setText(String.format("0" + timeHour + ":" + timeMin));
-                        } else {
-                            if (timeMin < 10)
-                                Clock.setText(String.format(timeHour + ":0" + timeMin));
-                            else
-                                Clock.setText(String.format(timeHour + ":" + timeMin));
-                        }
+                        Clock.setText(String.format(Locale.getDefault(), "%02d:%02d", timeHour, timeMin));
                     }
                 });
             }
         };
         mRunTimer = new Timer();
-        mRunTimer.schedule(mTask, 0, 1000);
+        mRunTimer.schedule(mTask, 60000, 60000);
     }
 
     //停止计时器
@@ -177,7 +157,6 @@ public class Sleep extends Activity {
             mRunTimer.cancel();
             mRunTimer = null;
         }
-        time = 0;
     }
 
     //下面是乱七八糟的保活策略，只能在sdk=26时有效，目前28没有效果可能还有bug
@@ -217,7 +196,7 @@ public class Sleep extends Activity {
         sensor.stopSensor();
         stopRunTimer();
 //        stopPlayMusicService();
-        stopDaemonService();
+//        stopDaemonService();
         //mJobManager.stopJobScheduler();
     }
 }
