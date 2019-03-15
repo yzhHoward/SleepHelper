@@ -2,7 +2,6 @@ package com.howard.sleephelper;
 
 import android.app.Activity;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -11,17 +10,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.howard.sleephelper.drawChart.DrawPieChart;
 import com.howard.sleephelper.sleepRecord.Bean;
 import com.howard.sleephelper.sleepRecord.GetRecord;
 
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
 
@@ -38,9 +31,9 @@ public class AfterSleep extends Activity {
     TextView mDeep;
     TextView mSwallow;
     TextView mDream;
+    DrawPieChart mDrawPieChart;
 
     private Bean mRecord;
-    private GetRecord mGetRecord;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,7 +57,10 @@ public class AfterSleep extends Activity {
         Drawable cur = resources.getDrawable(array[index]);
         background.setBackground(cur);
         long recordId = this.getIntent().getLongExtra("recordId", 0);
+
+        GetRecord mGetRecord = new GetRecord(this);
         mRecord = mGetRecord.getRecordById(recordId);
+
         initView();
     }
 
@@ -81,12 +77,7 @@ public class AfterSleep extends Activity {
                     mRecord.getSwallowTime() / 60, mRecord.getSwallowTime() % 60));
             mDream.setText(String.format(Locale.getDefault(), "醒/梦 %02d:%02d",
                     mRecord.getAwakeTime() / 60, mRecord.getAwakeTime() % 60));
-            mPieChart.setNoDataText("睡眠时间太短啦！没有足够数据！");
-            mPieChart.setNoDataTextColor(Color.WHITE);
-            //画空心饼状图
-            if (mRecord.getDrawChart()) {
-                drawChart();
-            }
+            mDrawPieChart = new DrawPieChart(mPieChart, mRecord, getResources());
         } else {
             Toast.makeText(this, "数据错误", Toast.LENGTH_SHORT).show();
         }
@@ -103,61 +94,6 @@ public class AfterSleep extends Activity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
-    }
-
-    //画图的部分
-    protected void drawChart() {
-        mPieChart.setCenterText("您的睡眠状态");
-        mPieChart.setCenterTextColor(Color.WHITE);
-        mPieChart.setUsePercentValues(true);
-        mPieChart.getDescription().setEnabled(false);
-        mPieChart.setExtraOffsets(10, 10, 10, 5);
-        mPieChart.setDrawCenterText(true);
-        mPieChart.setDrawHoleEnabled(true);
-        mPieChart.setTransparentCircleColor(Color.WHITE);
-        mPieChart.setTransparentCircleAlpha(110);
-        mPieChart.setHoleRadius(58f);
-        mPieChart.setHoleColor(Color.TRANSPARENT);
-        mPieChart.setTransparentCircleRadius(61f);
-        mPieChart.setRotationAngle(0);
-        mPieChart.setRotationEnabled(true);
-        mPieChart.setHighlightPerTapEnabled(false);
-        ArrayList<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(mRecord.getDeepTime(), "深度睡眠"));
-        entries.add(new PieEntry(mRecord.getSwallowTime(), "浅层睡眠"));
-        entries.add(new PieEntry(mRecord.getAwakeTime(), "醒/梦"));
-
-        PieDataSet dataSet = new PieDataSet(entries, "");
-        dataSet.setSliceSpace(3f);
-        dataSet.setSelectionShift(5f);
-
-        mPieChart.setEntryLabelColor(Color.WHITE);
-        mPieChart.setEntryLabelTextSize(12f);
-        Legend l = mPieChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        l.setOrientation(Legend.LegendOrientation.VERTICAL);
-        l.setDrawInside(false);
-        l.setXEntrySpace(7f);
-        l.setYEntrySpace(0f);
-        l.setYOffset(0f);
-        l.setTextColor(Color.WHITE);
-
-        ArrayList<Integer> colors = new ArrayList<>();
-        colors.add(getResources().getColor(R.color.Pie_Green));
-        colors.add(getResources().getColor(R.color.Pie_Blue));
-        colors.add(getResources().getColor(R.color.Pie_Yellow));
-        dataSet.setColors(colors);
-
-        PieData data = new PieData(dataSet);
-        data.setValueFormatter(new PercentFormatter());
-        data.setValueTextSize(11f);
-        data.setValueTextColor(Color.WHITE);
-        mPieChart.setData(data);
-        mPieChart.highlightValues(null);
-
-        mPieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
-        mPieChart.invalidate();
     }
 
     @Override

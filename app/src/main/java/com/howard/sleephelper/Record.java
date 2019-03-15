@@ -16,6 +16,7 @@ import com.howard.sleephelper.sleepRecord.Bean;
 import com.howard.sleephelper.sleepRecord.GetRecord;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -25,15 +26,9 @@ public class Record extends Activity {
 
     private long exitTime = 0;
 
-    private int cur;
-    private int[][] time = new int[20][4];
-
     private RecyclerView rvTrace;
     private List<Trace> traceList = new ArrayList<>();
     private TraceListAdapter adapter;
-
-    private List<Bean> records;
-    private GetRecord mGetRecord;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,7 +40,9 @@ public class Record extends Activity {
 
     //睡眠记录数据初始化
     private void initData() {
-        records = mGetRecord.queryAllList();
+        GetRecord mGetRecord = new GetRecord(this);
+        List<Bean> records = mGetRecord.queryAllList();
+        Collections.reverse(records);
         for (Bean e : records) {
             traceList.add(new Trace(e.getDate(), e.getStartTime() + "-" + e.getEndTime()
                     + "  " + e.getTotalTime() / 60 + "时" + e.getTotalTime() % 60 + "分"));

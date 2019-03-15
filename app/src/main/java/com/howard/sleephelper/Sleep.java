@@ -74,7 +74,7 @@ public class Sleep extends Activity {
     //开始记录数据
     public long initData() {
         boolean reStart;
-        newRecord = new GetRecord();
+        newRecord = new GetRecord(this);
         Calendar calendar = Calendar.getInstance();
         mRecord = newRecord.insertData(String.valueOf(calendar.get(Calendar.MONTH)) + "-"
                         + String.valueOf(calendar.get(Calendar.DATE)),

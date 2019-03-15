@@ -14,7 +14,7 @@ public class GetRecord {
     private BeanDao beanDao;
     private DaoSession mDaoSession;
 
-    private void initGreenDao(Context context) {
+    public GetRecord(Context context) {
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, "sleepRecord.db");
         SQLiteDatabase db = helper.getWritableDatabase();
         DaoMaster daoMaster = new DaoMaster(db);
