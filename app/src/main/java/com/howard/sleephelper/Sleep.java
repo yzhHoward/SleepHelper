@@ -29,11 +29,9 @@ import java.util.TimerTask;
  * 记录睡眠的界面
  */
 public class Sleep extends Activity {
-    TextView Clock;
+    TextView clock;
     RelativeLayout background;
 
-    private int timeHour;
-    private int timeMin;
     private long startTime;
 
     private Timer mRunTimer;
@@ -55,8 +53,8 @@ public class Sleep extends Activity {
     //界面初始化
     public void initView() {
         Typeface typeface = Typeface.createFromAsset(getAssets(), "clock_font.ttf");
-        Clock = findViewById(R.id.mRunTime);
-        Clock.setTypeface(typeface);
+        clock = findViewById(R.id.mRunTime);
+        clock.setTypeface(typeface);
 
         //设置随机背景
         background = findViewById(R.id.sleep_background);
@@ -73,19 +71,20 @@ public class Sleep extends Activity {
         boolean restart;
         restart = this.getIntent().getBooleanExtra("restart", false);
         mGetRecord = new GetRecord(this);
+        startRunTimer();
         Calendar calendar = Calendar.getInstance();
         //注意：若启用mJobManager则需要重新调整reStart内容
         if (restart) {
-            sensor = new Sensors(this, mGetRecord.getLatestRecord());
+            mRecord = mGetRecord.getLatestRecord();
+            sensor = new Sensors(this, mRecord);
             //startGrayService();
-            return calendar.getTimeInMillis();
+        } else {
+            mRecord = mGetRecord.insertData(String.valueOf(calendar.get(Calendar.MONTH)) + "-"
+                            + String.valueOf(calendar.get(Calendar.DATE)),
+                    String.format(Locale.getDefault(), "%02d:%02d",
+                            calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)));
+            sensor = new Sensors(this, mRecord);
         }
-        mRecord = mGetRecord.insertData(String.valueOf(calendar.get(Calendar.MONTH)) + "-"
-                        + String.valueOf(calendar.get(Calendar.DATE)),
-                String.format(Locale.getDefault(), "%02d:%02d",
-                        calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)));
-        sensor = new Sensors(this, mRecord);
-        startRunTimer();
         //startPlayMusicService();
 //        startDaemonService();
         return calendar.getTimeInMillis();
@@ -124,31 +123,38 @@ public class Sleep extends Activity {
     }
 
     //计时器
-    //TODO: 有问题，需要重写
     private void startRunTimer() {
+        Calendar calendar = Calendar.getInstance();
+        clock.setText(String.format(Locale.getDefault(), "%02d:%02d",
+                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)));
         TimerTask mTask = new TimerTask() {
+            Calendar calendar = Calendar.getInstance();
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            int minute = calendar.get(Calendar.MINUTE);
+
             @Override
             public void run() {
-                ++timeMin;
-                if (timeMin == 60) {
-                    timeMin = 0;
-                    timeHour++;
+                ++minute;
+                if (minute == 60) {
+                    minute = 0;
+                    hour++;
                 }
-                if (timeHour == 24) {
-                    timeMin = 0;
-                    timeHour = 0;
+                if (hour == 24) {
+                    minute = 0;
+                    hour = 0;
                 }
                 // 更新UI，有bug，需要重写
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Clock.setText(String.format(Locale.getDefault(), "%02d:%02d", timeHour, timeMin));
+                        clock.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
                     }
                 });
             }
         };
         mRunTimer = new Timer();
-        mRunTimer.schedule(mTask, 60000, 60000);
+        mRunTimer.schedule(mTask, 60000 - calendar.get(Calendar.MINUTE) * 1000
+                - calendar.get(Calendar.MILLISECOND), 60000);
     }
 
     //停止计时器
@@ -195,6 +201,7 @@ public class Sleep extends Activity {
         super.onDestroy();
         sensor.stopSensor();
         stopRunTimer();
+
 //        stopPlayMusicService();
 //        stopDaemonService();
         //mJobManager.stopJobScheduler();
