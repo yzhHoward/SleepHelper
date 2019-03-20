@@ -1,6 +1,7 @@
 package com.howard.sleephelper;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -84,12 +85,16 @@ public class AfterSleep extends Activity {
     }
 
     public void AfterSleepClick(View v) {
+        Intent i = new Intent().setClass(AfterSleep.this, MainActivity.class);
+        AfterSleep.this.startActivity(i);
         AfterSleep.this.finish();
     }
 
     //返回键效果
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Intent i = new Intent().setClass(AfterSleep.this, MainActivity.class);
+            AfterSleep.this.startActivity(i);
             AfterSleep.this.finish();
             return true;
         }

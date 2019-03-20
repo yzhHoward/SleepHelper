@@ -39,9 +39,17 @@ public class GetRecord {
     }
 
     //删
-    public void deleteByKey(Long id) {
+    public void deleteById(Long id) {
         try {
             beanDao.deleteByKey(id);
+        } catch (Exception e) {
+            Log.e(TAG, "数据库删除失败");
+        }
+    }
+
+    public void delete(Bean mRecord) {
+        try {
+            beanDao.delete(mRecord);
         } catch (Exception e) {
             Log.e(TAG, "数据库删除失败");
         }
@@ -58,7 +66,7 @@ public class GetRecord {
     public void finalUpdate(Bean mRecord, int endHour, int endMin, long totalTime,
                             int deepTime, int swallowTime, int awakeTime) {
         totalTime /= 1000 * 60;
-        if (totalTime>1) {
+        if (totalTime>2) {
             mRecord.setDrawChart(true);
         }
         mRecord.setEndTime(String.format(Locale.getDefault(), "%02d:%02d", endHour, endMin));

@@ -25,7 +25,7 @@ public class TraceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         private TextView mTopLine;
         private ImageView mDot;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             mDate = itemView.findViewById(R.id.Date);
             mTime = itemView.findViewById(R.id.Time);
@@ -33,7 +33,7 @@ public class TraceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             mDot = itemView.findViewById(R.id.Dot);
         }
 
-        public void bindHolder(Trace trace) {
+        void bindHolder(Trace trace) {
             mDate.setText(trace.getDate());
             mTime.setText(trace.getTime());
         }
