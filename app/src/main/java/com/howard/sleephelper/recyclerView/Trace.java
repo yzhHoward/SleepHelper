@@ -1,4 +1,4 @@
-package com.howard.sleephelper.RecyclerView;
+package com.howard.sleephelper.recyclerView;
 
 public class Trace {
 

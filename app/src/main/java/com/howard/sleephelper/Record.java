@@ -3,15 +3,14 @@ package com.howard.sleephelper;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
-import com.howard.sleephelper.RecyclerView.Trace;
-import com.howard.sleephelper.RecyclerView.TraceListAdapter;
+import com.howard.sleephelper.recyclerView.Trace;
+import com.howard.sleephelper.recyclerView.TraceListAdapter;
 import com.howard.sleephelper.sleepRecord.Bean;
 import com.howard.sleephelper.sleepRecord.GetRecord;
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
@@ -15,7 +16,8 @@ public class GetRecord {
     private DaoSession mDaoSession;
 
     public GetRecord(Context context) {
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, "sleepRecord.db");
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper
+                (context, String.valueOf(context.getExternalFilesDir(null) + File.separator + "sleepRecord.db"));
         SQLiteDatabase db = helper.getWritableDatabase();
         DaoMaster daoMaster = new DaoMaster(db);
         mDaoSession = daoMaster.newSession();
@@ -66,11 +68,11 @@ public class GetRecord {
     public void finalUpdate(Bean mRecord, int endHour, int endMin, long totalTime,
                             int deepTime, int swallowTime, int awakeTime) {
         totalTime /= 1000 * 60;
-        if (totalTime>2) {
+        if (totalTime > 2) {
             mRecord.setDrawChart(true);
         }
         mRecord.setEndTime(String.format(Locale.getDefault(), "%02d:%02d", endHour, endMin));
-        mRecord.setTotalTime((int)totalTime);
+        mRecord.setTotalTime((int) totalTime);
         mRecord.setDeepTime(deepTime);
         mRecord.setSwallowTime(swallowTime);
         mRecord.setAwakeTime(awakeTime);
@@ -88,8 +90,8 @@ public class GetRecord {
     }
 
     public Bean getLatestRecord() {
-        List<Bean> records =  beanDao.queryBuilder().orderDesc(BeanDao.Properties.Id).list();
-        if(!records.isEmpty())
+        List<Bean> records = beanDao.queryBuilder().orderDesc(BeanDao.Properties.Id).list();
+        if (!records.isEmpty())
             return records.get(0);
         return null;
     }

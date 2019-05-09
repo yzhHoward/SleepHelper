@@ -1,15 +1,11 @@
 package com.howard.sleephelper;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,9 +14,6 @@ import android.widget.Toast;
 import com.howard.sleephelper.sleepRecord.Bean;
 import com.howard.sleephelper.sleepRecord.GetRecord;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Random;
 
 /**
@@ -29,32 +22,14 @@ import java.util.Random;
 public class MainActivity extends Activity {
 
     private long exitTime = 0;
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
 
     //初始化
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //myPermission();
         readLog();
         initView();
-    }
-
-    //检测是否有存储权限，没有申请提权
-    public void myPermission() {
-        int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-            );
-        }
     }
 
     //设置随机背景

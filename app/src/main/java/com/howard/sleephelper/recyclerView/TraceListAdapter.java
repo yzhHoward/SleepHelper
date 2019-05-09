@@ -1,4 +1,4 @@
-package com.howard.sleephelper.RecyclerView;
+package com.howard.sleephelper.recyclerView;
 
 import android.content.Context;
 import android.content.Intent;
