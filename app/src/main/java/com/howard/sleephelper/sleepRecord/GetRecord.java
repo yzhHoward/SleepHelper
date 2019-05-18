@@ -10,6 +10,9 @@ import java.util.Locale;
 
 import static android.content.ContentValues.TAG;
 
+/**
+ * 处理睡眠记录数据库
+ */
 public class GetRecord {
 
     private BeanDao beanDao;
@@ -28,7 +31,13 @@ public class GetRecord {
         return mDaoSession;
     }
 
-    //增
+    /**
+     * 插入睡眠记录
+     *
+     * @param date      日期
+     * @param startTime 开始时间
+     * @return 睡眠记录
+     */
     public Bean insertData(String date, String startTime) {
         Bean mRecord = new Bean(null, date, startTime, startTime, 0,
                 false, 0, 0, 0, "", false);
@@ -40,7 +49,10 @@ public class GetRecord {
         return mRecord;
     }
 
-    //删
+    /**
+     * 根据id删除睡眠记录
+     * @param id 记录id
+     */
     public void deleteById(Long id) {
         try {
             beanDao.deleteByKey(id);
@@ -49,6 +61,10 @@ public class GetRecord {
         }
     }
 
+    /**
+     * 根据记录删除
+     * @param mRecord 记录对象
+     */
     public void delete(Bean mRecord) {
         try {
             beanDao.delete(mRecord);
@@ -57,7 +73,11 @@ public class GetRecord {
         }
     }
 
-    //改
+    /**
+     * 更新记录
+     * @param mRecord 记录对象
+     * @param sleepDetail 要新增的信息
+     */
     public void update(Bean mRecord, String sleepDetail) {
         if (mRecord != null) {
             mRecord.setSleepDetail(mRecord.getSleepDetail() + sleepDetail);
@@ -65,6 +85,16 @@ public class GetRecord {
         }
     }
 
+    /**
+     * 完成一次睡眠记录时的最终更新
+     * @param mRecord 睡眠记录对象
+     * @param endHour 结束时间
+     * @param endMin 结束时间
+     * @param totalTime 总时间
+     * @param deepTime 深度睡眠时间
+     * @param swallowTime 浅层睡眠时间
+     * @param awakeTime 醒的时间
+     */
     public void finalUpdate(Bean mRecord, int endHour, int endMin, long totalTime,
                             int deepTime, int swallowTime, int awakeTime) {
         totalTime /= 1000 * 60;
@@ -80,7 +110,10 @@ public class GetRecord {
         beanDao.update(mRecord);
     }
 
-    //查
+    /**
+     * 查询所有记录
+     * @return 记录对象的列表
+     */
     public List queryAllList() {
         return beanDao.queryBuilder().orderDesc(BeanDao.Properties.Id).list();
     }

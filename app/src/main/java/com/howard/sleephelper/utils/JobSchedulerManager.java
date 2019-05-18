@@ -7,6 +7,9 @@ import android.content.Context;
 
 import com.howard.sleephelper.service.AliveJobService;
 
+/**
+ * JobSchedulerManager实现保活，但是在安卓6.0有bug，先去掉了
+ */
 public class JobSchedulerManager {
     private static final int JOB_ID = 1;
     private static JobSchedulerManager mJobManager;
@@ -14,7 +17,7 @@ public class JobSchedulerManager {
     private static Context mContext;
 
     private JobSchedulerManager(Context ctxt){
-        this.mContext = ctxt;
+        mContext = ctxt;
         mJobScheduler = (JobScheduler)ctxt.getSystemService(Context.JOB_SCHEDULER_SERVICE);
     }
 

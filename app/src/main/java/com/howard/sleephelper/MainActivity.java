@@ -23,6 +23,7 @@ public class MainActivity extends Activity {
 
     private long exitTime = 0;
 
+
     //初始化
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

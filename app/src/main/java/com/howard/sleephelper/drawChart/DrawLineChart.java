@@ -28,6 +28,13 @@ public class DrawLineChart {
     private ArrayList<Float> sleepDetails;
     private List<Entry> entries = new ArrayList<>();
 
+    /**
+     * 绘制折线图
+     *
+     * @param lineChart  折线图元素
+     * @param mRecord    睡眠记录
+     * @param mResources
+     */
     public DrawLineChart(LineChart lineChart, Bean mRecord, Resources mResources) {
         mLineChart = lineChart;
         mLineChart.setDrawBorders(false);

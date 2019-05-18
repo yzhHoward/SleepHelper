@@ -5,6 +5,9 @@ import android.content.Context;
 
 import java.util.List;
 
+/**
+ * 判断程序是否还活着
+ */
 public class SystemUtils {
 
     public static boolean isAPPALive(Context mContext, String packageName) {

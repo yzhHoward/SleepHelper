@@ -47,13 +47,16 @@
 
         <service android:name=".service.DaemonService"
             android:enabled="true"
-            android:exported="true"
             android:process=":daemon_service"/>
 
         <service android:name=".service.PlayerMusicService"
             android:enabled="true"
-            android:exported="true"
             android:process=":music_service"/>
+
+        <service
+            android:name=".service.MediaService"
+            android:enabled="true"
+            android:process=":media_service" />
 
         <service
             android:name=".service.AliveJobService"
@@ -61,7 +64,6 @@
 
         <service android:name=".service.GrayService"
             android:enabled="true"
-            android:exported="true"
             android:process=":gray_service"/>
 
         <meta-data

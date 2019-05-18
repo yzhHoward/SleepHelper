@@ -21,6 +21,13 @@ public class DrawPieChart {
     private Bean mRecord;
     private Resources mResources;
 
+    /**
+     * 绘制饼状图
+     *
+     * @param pieChart   饼状图的对象
+     * @param mRecord    睡眠记录
+     * @param mResources 资源实例
+     */
     public DrawPieChart(PieChart pieChart, Bean mRecord, Resources mResources) {
         mPieChart = pieChart;
         mPieChart.setNoDataText("睡眠时间太短啦！没有足够数据！");

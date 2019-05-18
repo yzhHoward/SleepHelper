@@ -31,6 +31,9 @@ public class Sensors {
         mGetRecord = new GetRecord(context);
     }
 
+    /**
+     * 开始记录的算法，主要是取欧氏距离
+     */
     private SensorEventListener listener = new SensorEventListener() {
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
         }

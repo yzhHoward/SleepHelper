@@ -47,6 +47,9 @@ public class TraceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     @Nullable
+    /**
+     * 用来展示睡眠记录的列表
+     */
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(inflater.inflate(R.layout.list_cell, parent, false));
     }
