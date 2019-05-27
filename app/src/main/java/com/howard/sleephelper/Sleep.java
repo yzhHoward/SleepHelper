@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,9 +40,9 @@ public class Sleep extends Activity {
     TextView clock;
     RelativeLayout background;
 
+    private Button playButton;
+
     private long startTime;
-    //“绑定”服务的intent
-    Intent MediaServiceIntent;
 
     private Timer mRunTimer;
     private Sensors sensor;
@@ -50,19 +51,7 @@ public class Sleep extends Activity {
     private boolean playing;
     //private JobSchedulerManager mJobManager;
     private MediaService.MyBinder mMyBinder;
-    // 连接音乐服务
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            mMyBinder = (MediaService.MyBinder) service;
-            Log.d(TAG, "Service与Activity已连接");
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
-    };
+    private boolean firstPlay;
 
     //界面初始化
     public void initView() {
@@ -70,9 +59,11 @@ public class Sleep extends Activity {
         clock = findViewById(R.id.mRunTime);
         clock.setTypeface(typeface);
 
+        playButton = findViewById(R.id.play);
+
         //设置随机背景
         background = findViewById(R.id.sleep_background);
-        int array[] = {R.drawable.bg_2, R.drawable.bg_3, R.drawable.bg_6, R.drawable.bg_7};
+        int[] array = {R.drawable.bg_2, R.drawable.bg_3, R.drawable.bg_6, R.drawable.bg_7};
         Random rnd = new Random();
         int index = rnd.nextInt(4);
         Resources resources = getBaseContext().getResources();
@@ -104,8 +95,8 @@ public class Sleep extends Activity {
             sensor = new Sensors(this, mRecord);
             //startGrayService();
         } else {
-            mRecord = mGetRecord.insertData(String.valueOf(calendar.get(Calendar.MONTH)) + "-"
-                            + String.valueOf(calendar.get(Calendar.DATE)),
+            mRecord = mGetRecord.insertData(calendar.get(Calendar.MONTH) + "-"
+                            + calendar.get(Calendar.DATE),
                     String.format(Locale.getDefault(), "%02d:%02d",
                             calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)));
             sensor = new Sensors(this, mRecord);
@@ -116,10 +107,24 @@ public class Sleep extends Activity {
     }
 
     public void initMedia() {
-        playing = true;
-        MediaServiceIntent = new Intent(this, MediaService.class);
+        playing = false;
+        Intent MediaServiceIntent = new Intent(this, MediaService.class);
         bindService(MediaServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        firstPlay = false;
     }
+
+    // 连接音乐服务
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mMyBinder = (MediaService.MyBinder) service;
+            Log.e(TAG, "Service与Activity已连接");
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+        }
+    };
 
     // 音乐播放按钮
     public void onClickMedia(View v) {
@@ -127,8 +132,12 @@ public class Sleep extends Activity {
             case R.id.play:
                 if (!playing) {
                     mMyBinder.playMusic();
+                    Log.e(TAG, "Play music.");
+                    playButton.setBackground(getResources().getDrawable(R.drawable.music_end));
                 } else {
                     mMyBinder.pauseMusic();
+                    Log.e(TAG, "Pause music.");
+                    playButton.setBackground(getResources().getDrawable(R.drawable.music_start));
                 }
                 playing = !playing;
                 break;
@@ -251,11 +260,14 @@ public class Sleep extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         sensor.stopSensor();
-        stopRunTimer();
 
-        mMyBinder.closeMedia();
+        if (mMyBinder != null && playing) {
+            mMyBinder.closeMedia();
+        }
+
         unbindService(mServiceConnection);
 
+        stopRunTimer();
 //        stopPlayMusicService();
 //        stopDaemonService();
         //mJobManager.stopJobScheduler();

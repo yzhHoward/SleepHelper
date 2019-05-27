@@ -53,10 +53,7 @@
             android:enabled="true"
             android:process=":music_service"/>
 
-        <service
-            android:name=".service.MediaService"
-            android:enabled="true"
-            android:process=":media_service" />
+        <service android:name=".service.MediaService"/>
 
         <service
             android:name=".service.AliveJobService"
