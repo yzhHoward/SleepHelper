@@ -3,4 +3,8 @@
     <string name="start">开始记录</string>
     <string name="time">0 : 0 : 0</string>
     <string name="runtime">%1$d : %2$d</string>
+    <string name="get_up_time">起床 %1$s</string>
+    <string name="sleep_time">睡觉 %1$s</string>
+    <string name="stop_record">停止记录</string>
+    <string name="recording">正在记录您的睡眠…</string>
 </resources>

@@ -11,8 +11,8 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.howard.sleephelper.drawChart.DrawLineChart;
 import com.howard.sleephelper.drawChart.DrawPieChart;
-import com.howard.sleephelper.sleepRecord.Bean;
 import com.howard.sleephelper.sleepRecord.GetRecord;
+import com.howard.sleephelper.sleepRecord.RecordBean;
 
 import java.util.List;
 import java.util.Locale;
@@ -44,8 +44,10 @@ public class RecordDetails extends Activity {
     private boolean left_invisible;
     private boolean right_invisible;
 
-    private List<Bean> records;
-    private Bean mRecord;
+    private String date;
+
+    private List<RecordBean> records;
+    private RecordBean mRecord;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +66,7 @@ public class RecordDetails extends Activity {
         mDream = findViewById(R.id.dream);
 
         idx = this.getIntent().getIntExtra("position", 0);
+        date = this.getIntent().getStringExtra("date");
         readLog();
         setText();
         initView();
@@ -84,8 +87,8 @@ public class RecordDetails extends Activity {
 
     private void setText() {
         mDate.setText(String.format(Locale.getDefault(), "%d月%d日", month, day));
-        mStartTime.setText("睡觉 " + mRecord.getStartTime());
-        mStopTime.setText("起床 " + mRecord.getEndTime());
+        mStartTime.setText(String.format(getResources().getString(R.string.sleep_time), mRecord.getStartTime()));
+        mStopTime.setText(String.format(getResources().getString(R.string.get_up_time), mRecord.getEndTime()));
         mSleepTime.setText(String.format(Locale.getDefault(), "时长 %02d:%02d",
                 mRecord.getTotalTime() / 60, mRecord.getTotalTime() % 60));
         mDeep.setText(String.format(Locale.getDefault(), "深度睡眠 %02d:%02d",
@@ -138,10 +141,10 @@ public class RecordDetails extends Activity {
 
     private void readLog() {
         GetRecord mGetRecord = new GetRecord(this);
-        records = mGetRecord.queryAllList();
+        records = mGetRecord.queryByDate(date);
         mRecord = records.get(idx);
         max = records.size() - 1;
-        String arr[] = mRecord.getDate().split("-");
+        String[] arr = mRecord.getDate().split("-");
         month = Integer.parseInt(arr[0]);
         day = Integer.parseInt(arr[1]);
     }

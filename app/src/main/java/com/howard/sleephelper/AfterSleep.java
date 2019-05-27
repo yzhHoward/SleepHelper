@@ -13,8 +13,8 @@ import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.howard.sleephelper.drawChart.DrawPieChart;
-import com.howard.sleephelper.sleepRecord.Bean;
 import com.howard.sleephelper.sleepRecord.GetRecord;
+import com.howard.sleephelper.sleepRecord.RecordBean;
 
 import java.util.Locale;
 import java.util.Random;
@@ -34,7 +34,7 @@ public class AfterSleep extends Activity {
     TextView mDream;
     DrawPieChart mDrawPieChart;
 
-    private Bean mRecord;
+    private RecordBean mRecord;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,7 @@ public class AfterSleep extends Activity {
         mDream = findViewById(R.id.dream);
 
         //随机背景
-        int array[] = {R.drawable.bg_1, R.drawable.bg_4, R.drawable.bg_5};
+        int[] array = {R.drawable.bg_1, R.drawable.bg_4, R.drawable.bg_5};
         Random rnd = new Random();
         int index = rnd.nextInt(3);
         Resources resources = getBaseContext().getResources();
@@ -68,8 +68,8 @@ public class AfterSleep extends Activity {
     //设置文本
     protected void initView() {
         if (mRecord != null) {
-            mStartTime.setText("睡觉 " + mRecord.getStartTime());
-            mStopTime.setText("起床 " + mRecord.getEndTime());
+            mStartTime.setText(String.format(getResources().getString(R.string.sleep_time), mRecord.getStartTime()));
+            mStopTime.setText(String.format(getResources().getString(R.string.get_up_time), mRecord.getEndTime()));
             mTime.setText(String.format(Locale.getDefault(), "时长 %02d:%02d",
                     mRecord.getTotalTime() / 60, mRecord.getTotalTime() % 60));
             mDeep.setText(String.format(Locale.getDefault(), "深度睡眠 %02d:%02d",

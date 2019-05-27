@@ -7,8 +7,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.widget.Toast;
 
-import com.howard.sleephelper.sleepRecord.Bean;
 import com.howard.sleephelper.sleepRecord.GetRecord;
+import com.howard.sleephelper.sleepRecord.RecordBean;
 
 import java.util.Calendar;
 
@@ -21,10 +21,10 @@ public class Sensors {
     private SensorManager mSensorManager;
     private Sensor Accelerometer;
 //    private Sensor Gyroscope;
-    private Bean mRecord;
+private RecordBean mRecord;
     private GetRecord mGetRecord;
 
-    public Sensors(Context context, Bean mRecord) {
+    public Sensors(Context context, RecordBean mRecord) {
         getSensorManager(context);
         startSensor();
         this.mRecord = mRecord;

@@ -11,14 +11,14 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.howard.sleephelper.R;
-import com.howard.sleephelper.sleepRecord.Bean;
+import com.howard.sleephelper.sleepRecord.RecordBean;
 
 import java.util.ArrayList;
 
 public class DrawPieChart {
 
     private PieChart mPieChart;
-    private Bean mRecord;
+    private RecordBean mRecord;
     private Resources mResources;
 
     /**
@@ -28,7 +28,7 @@ public class DrawPieChart {
      * @param mRecord    睡眠记录
      * @param mResources 资源实例
      */
-    public DrawPieChart(PieChart pieChart, Bean mRecord, Resources mResources) {
+    public DrawPieChart(PieChart pieChart, RecordBean mRecord, Resources mResources) {
         mPieChart = pieChart;
         mPieChart.setNoDataText("睡眠时间太短啦！没有足够数据！");
         mPieChart.setNoDataTextColor(Color.WHITE);
@@ -42,7 +42,7 @@ public class DrawPieChart {
         }
     }
 
-    public void setRecord(Bean mRecord) {
+    public void setRecord(RecordBean mRecord) {
         this.mRecord = mRecord;
         if (mRecord.getDrawChart()) {
             drawChart();

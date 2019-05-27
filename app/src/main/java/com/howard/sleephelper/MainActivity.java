@@ -11,8 +11,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.howard.sleephelper.sleepRecord.Bean;
 import com.howard.sleephelper.sleepRecord.GetRecord;
+import com.howard.sleephelper.sleepRecord.RecordBean;
 
 import java.util.Random;
 
@@ -37,7 +37,7 @@ public class MainActivity extends Activity {
     public void initView() {
         ImageView mImageText;
         mImageText = findViewById(R.id.imageText);
-        int array[] = {R.drawable.main_bg_1, R.drawable.main_bg_2, R.drawable.main_bg_3,
+        int[] array = {R.drawable.main_bg_1, R.drawable.main_bg_2, R.drawable.main_bg_3,
                 R.drawable.main_bg_4, R.drawable.main_bg_5, R.drawable.main_bg_6};
         Random rnd = new Random();
         int index = rnd.nextInt(6);
@@ -81,7 +81,7 @@ public class MainActivity extends Activity {
 
     //读睡眠记录，判断是否异常退出
     private void readLog() {
-        Bean mRecord;
+        RecordBean mRecord;
         GetRecord mGetRecord = new GetRecord(this);
         mRecord = mGetRecord.getLatestRecord();
         if (mRecord != null) {

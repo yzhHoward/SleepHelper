@@ -15,16 +15,18 @@ import static android.content.ContentValues.TAG;
  */
 public class GetRecord {
 
-    private BeanDao beanDao;
+    private RecordBeanDao recordBeanDao;
+    private RemindBeanDao remindBeanDao;
     private DaoSession mDaoSession;
 
     public GetRecord(Context context) {
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper
-                (context, String.valueOf(context.getExternalFilesDir(null) + File.separator + "sleepRecord.db"));
+                (context, context.getExternalFilesDir(null) + File.separator + "sleepRecord.db");
         SQLiteDatabase db = helper.getWritableDatabase();
         DaoMaster daoMaster = new DaoMaster(db);
         mDaoSession = daoMaster.newSession();
-        beanDao = mDaoSession.getBeanDao();
+        recordBeanDao = mDaoSession.getRecordBeanDao();
+        remindBeanDao = mDaoSession.getRemindBeanDao();
     }
 
     public DaoSession getDaoSession() {
@@ -38,11 +40,11 @@ public class GetRecord {
      * @param startTime 开始时间
      * @return 睡眠记录
      */
-    public Bean insertData(String date, String startTime) {
-        Bean mRecord = new Bean(null, date, startTime, startTime, 0,
+    public RecordBean insertData(String date, String startTime) {
+        RecordBean mRecord = new RecordBean(null, date, startTime, startTime, 0,
                 false, 0, 0, 0, "", false);
         try {
-            beanDao.insert(mRecord);
+            recordBeanDao.insert(mRecord);
         } catch (Exception e) {
             Log.e(TAG, "数据库插入失败");
         }
@@ -51,11 +53,12 @@ public class GetRecord {
 
     /**
      * 根据id删除睡眠记录
+     *
      * @param id 记录id
      */
     public void deleteById(Long id) {
         try {
-            beanDao.deleteByKey(id);
+            recordBeanDao.deleteByKey(id);
         } catch (Exception e) {
             Log.e(TAG, "数据库删除失败");
         }
@@ -63,11 +66,12 @@ public class GetRecord {
 
     /**
      * 根据记录删除
+     *
      * @param mRecord 记录对象
      */
-    public void delete(Bean mRecord) {
+    public void delete(RecordBean mRecord) {
         try {
-            beanDao.delete(mRecord);
+            recordBeanDao.delete(mRecord);
         } catch (Exception e) {
             Log.e(TAG, "数据库删除失败");
         }
@@ -75,27 +79,29 @@ public class GetRecord {
 
     /**
      * 更新记录
-     * @param mRecord 记录对象
+     *
+     * @param mRecord     记录对象
      * @param sleepDetail 要新增的信息
      */
-    public void update(Bean mRecord, String sleepDetail) {
+    public void update(RecordBean mRecord, String sleepDetail) {
         if (mRecord != null) {
             mRecord.setSleepDetail(mRecord.getSleepDetail() + sleepDetail);
-            beanDao.update(mRecord);
+            recordBeanDao.update(mRecord);
         }
     }
 
     /**
      * 完成一次睡眠记录时的最终更新
-     * @param mRecord 睡眠记录对象
-     * @param endHour 结束时间
-     * @param endMin 结束时间
-     * @param totalTime 总时间
-     * @param deepTime 深度睡眠时间
+     *
+     * @param mRecord     睡眠记录对象
+     * @param endHour     结束时间
+     * @param endMin      结束时间
+     * @param totalTime   总时间
+     * @param deepTime    深度睡眠时间
      * @param swallowTime 浅层睡眠时间
-     * @param awakeTime 醒的时间
+     * @param awakeTime   醒的时间
      */
-    public void finalUpdate(Bean mRecord, int endHour, int endMin, long totalTime,
+    public void finalUpdate(RecordBean mRecord, int endHour, int endMin, long totalTime,
                             int deepTime, int swallowTime, int awakeTime) {
         totalTime /= 1000 * 60;
         if (totalTime > 2) {
@@ -107,25 +113,55 @@ public class GetRecord {
         mRecord.setSwallowTime(swallowTime);
         mRecord.setAwakeTime(awakeTime);
         mRecord.setValid(true);
-        beanDao.update(mRecord);
+        recordBeanDao.update(mRecord);
     }
 
     /**
      * 查询所有记录
+     *
      * @return 记录对象的列表
      */
     public List queryAllList() {
-        return beanDao.queryBuilder().orderDesc(BeanDao.Properties.Id).list();
+        return recordBeanDao.queryBuilder().orderDesc(RecordBeanDao.Properties.Id).list();
     }
 
-    public Bean getRecordById(long id) {
-        return beanDao.queryBuilder().where(BeanDao.Properties.Id.eq(id)).build().unique();
+    public List queryByDate(String date) {
+        return recordBeanDao.queryBuilder().where(RecordBeanDao.Properties.Date.eq(date)).orderAsc(RecordBeanDao.Properties.Id).list();
     }
 
-    public Bean getLatestRecord() {
-        List<Bean> records = beanDao.queryBuilder().orderDesc(BeanDao.Properties.Id).list();
+    public RecordBean getRecordById(long id) {
+        return recordBeanDao.queryBuilder().where(RecordBeanDao.Properties.Id.eq(id)).build().unique();
+    }
+
+    public RecordBean getLatestRecord() {
+        List<RecordBean> records = recordBeanDao.queryBuilder().orderDesc(RecordBeanDao.Properties.Id).list();
         if (!records.isEmpty())
             return records.get(0);
         return null;
+    }
+
+    /**
+     * 修改提醒时间
+     *
+     * @param time 时间
+     */
+    public void updatePunch(String time) {
+        if (remindBeanDao.queryBuilder().list().isEmpty()) {
+            remindBeanDao.insert(new RemindBean(null, ""));
+        }
+        RemindBean remindBean = remindBeanDao.queryBuilder().list().get(0);
+        if (remindBean != null) {
+            remindBean.setTime(time);
+            remindBeanDao.update(remindBean);
+        }
+    }
+
+    /**
+     * 获取提醒时间
+     *
+     * @return 提醒的时间
+     */
+    public String getPunch() {
+        return remindBeanDao.queryBuilder().list().get(0).getTime();
     }
 }

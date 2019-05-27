@@ -6,19 +6,17 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
-import android.os.Environment;
 import android.os.IBinder;
-import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class MediaService extends Service implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener {
+public class MediaService extends Service implements MediaPlayer.OnPreparedListener {
     private static final String TAG = "MediaService";
     //初始化MediaPlayer
-    public MediaPlayer mMediaPlayer;
+    private MediaPlayer mMediaPlayer;
     private MyBinder mBinder = new MyBinder();
     //标记当前歌曲的序号
     private int currentPosition = 0;
@@ -26,6 +24,8 @@ public class MediaService extends Service implements MediaPlayer.OnCompletionLis
     //Environment.getExternalStorageDirectory().getAbsolutePath() + "/Sounds/a1.mp3",
     //歌曲路径
     private String[] musicPath;
+
+    private TextView title;
 
     @Override
     public void onCreate() {
@@ -39,7 +39,6 @@ public class MediaService extends Service implements MediaPlayer.OnCompletionLis
     }
 
     public String[] getMusic() {
-        // player.setOnCompletionListener(new InnerOnCompletionListener());
         AssetManager assetManager = getAssets();
         String[] tmp_files = null;
         try {
@@ -66,25 +65,29 @@ public class MediaService extends Service implements MediaPlayer.OnCompletionLis
         }
         if (mMediaPlayer == null) {
             mMediaPlayer = new MediaPlayer();
+            mMediaPlayer.setOnCompletionListener(new CompletionListener());
         }
         try {
             AssetFileDescriptor fd = getAssets().openFd(musicPath[currentPosition]);
+            title.setText(musicPath[currentPosition].replace(".mp3", ""));
             // 切歌之前先重置，释放掉之前的资源
             mMediaPlayer.reset();
             // 设置播放源
             mMediaPlayer.setDataSource(fd.getFileDescriptor(), fd.getStartOffset(), fd.getLength());
-            mMediaPlayer.setOnPreparedListener(this);
             // 开始播放前的准备工作，加载多媒体资源，获取相关信息
             mMediaPlayer.prepare();
+            mMediaPlayer.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    public void onCompletion(MediaPlayer mp) {
-        ++currentPosition;
-        changeMusic();
+    private final class CompletionListener implements MediaPlayer.OnCompletionListener {
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+            ++currentPosition;
+            changeMusic();
+        }
     }
 
     @Override
@@ -121,7 +124,6 @@ public class MediaService extends Service implements MediaPlayer.OnCompletionLis
         // 暂停
         public void pauseMusic() {
             if (mMediaPlayer.isPlaying()) {
-                // 如果还没开始播放，就开始
                 mMediaPlayer.pause();
             }
         }
@@ -153,11 +155,14 @@ public class MediaService extends Service implements MediaPlayer.OnCompletionLis
                 mMediaPlayer.release();
             }
         }
+
+        public void getMusicTitle(TextView musicTitle) {
+            title = musicTitle;
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mMediaPlayer.release();
     }
 }

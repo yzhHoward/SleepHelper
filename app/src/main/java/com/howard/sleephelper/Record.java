@@ -11,8 +11,8 @@ import android.widget.Toast;
 
 import com.howard.sleephelper.recyclerView.Trace;
 import com.howard.sleephelper.recyclerView.TraceListAdapter;
-import com.howard.sleephelper.sleepRecord.Bean;
 import com.howard.sleephelper.sleepRecord.GetRecord;
+import com.howard.sleephelper.sleepRecord.RecordBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,19 +28,29 @@ public class Record extends Activity {
     private List<Trace> traceList = new ArrayList<>();
     private TraceListAdapter adapter;
 
+    private String date;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.records);
         rvTrace = findViewById(R.id.timelList);
         initData();
+        date = this.getIntent().getStringExtra("date");
     }
 
     //睡眠记录数据初始化
     private void initData() {
         GetRecord mGetRecord = new GetRecord(this);
-        List<Bean> records = mGetRecord.queryAllList();
-        for (Bean e : records) {
+        List<RecordBean> records = mGetRecord.queryByDate(date);
+        if (records.size() == 1) {
+            Intent i = new Intent(Record.this, RecordDetails.class);
+            i.putExtra("position", 0);
+            i.putExtra("date", date);
+            Record.this.startActivity(i);
+            Record.this.finish();
+        }
+        for (RecordBean e : records) {
             traceList.add(new Trace(e.getDate(), e.getStartTime() + "-" + e.getEndTime()
                     + "  " + e.getTotalTime() / 60 + "时" + e.getTotalTime() % 60 + "分"));
         }

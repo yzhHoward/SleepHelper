@@ -17,8 +17,7 @@
         android:textColor="@android:color/darker_gray"
         android:textSize="70sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_titlebar" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btn_stop"
@@ -29,7 +28,7 @@
         android:layout_marginTop="60dp"
         android:background="@drawable/stop"
         android:onClick="onRunningClick2"
-        android:text="停止记录"
+        android:text="@string/stop_record"
         android:textColor="@color/colorWhite"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -43,13 +42,24 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="240dp"
-        android:text="正在记录您的睡眠..."
+        android:text="@string/recording"
         android:textColor="@color/rightRight"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/btn_stop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mRunTime" />
+
+    <TextView
+        android:id="@+id/musicName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/play"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="36dp"
+        android:text=""
+        android:textColor="@color/rightRight"
+        android:textSize="20sp" />
 
     <Button
         android:id="@+id/play"
@@ -58,7 +68,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="72dp"
-        android:background="@drawable/music_start"
+        android:background="@drawable/ic_play_btn_play"
         android:onClick="onClickMedia"
         android:text=""
         android:textAlignment="viewStart" />
@@ -71,7 +81,7 @@
         android:layout_marginStart="36dp"
         android:layout_marginTop="0dp"
         android:layout_toEndOf="@+id/play"
-        android:background="@drawable/music_next"
+        android:background="@drawable/ic_play_btn_next"
         android:onClick="onClickMedia"
         android:text="" />
 
@@ -83,7 +93,7 @@
         android:layout_marginTop="0dp"
         android:layout_marginEnd="36dp"
         android:layout_toStartOf="@+id/play"
-        android:background="@drawable/music_last"
+        android:background="@drawable/ic_play_btn_prev"
         android:onClick="onClickMedia"
         android:text="" />
 

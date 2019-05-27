@@ -22,8 +22,8 @@ import com.howard.sleephelper.service.DaemonService;
 import com.howard.sleephelper.service.GrayService;
 import com.howard.sleephelper.service.MediaService;
 import com.howard.sleephelper.service.PlayerMusicService;
-import com.howard.sleephelper.sleepRecord.Bean;
 import com.howard.sleephelper.sleepRecord.GetRecord;
+import com.howard.sleephelper.sleepRecord.RecordBean;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -38,6 +38,7 @@ import static android.content.ContentValues.TAG;
  */
 public class Sleep extends Activity {
     TextView clock;
+    TextView musicTitle;
     RelativeLayout background;
 
     private Button playButton;
@@ -46,30 +47,24 @@ public class Sleep extends Activity {
 
     private Timer mRunTimer;
     private Sensors sensor;
-    private Bean mRecord;
+    private RecordBean mRecord;
     private GetRecord mGetRecord;
     private boolean playing;
     //private JobSchedulerManager mJobManager;
     private MediaService.MyBinder mMyBinder;
-    private boolean firstPlay;
+    // 连接音乐服务
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mMyBinder = (MediaService.MyBinder) service;
+            mMyBinder.getMusicTitle(musicTitle);
+            Log.e(TAG, "Service与Activity已连接");
+        }
 
-    //界面初始化
-    public void initView() {
-        Typeface typeface = Typeface.createFromAsset(getAssets(), "clock_font.ttf");
-        clock = findViewById(R.id.mRunTime);
-        clock.setTypeface(typeface);
-
-        playButton = findViewById(R.id.play);
-
-        //设置随机背景
-        background = findViewById(R.id.sleep_background);
-        int[] array = {R.drawable.bg_2, R.drawable.bg_3, R.drawable.bg_6, R.drawable.bg_7};
-        Random rnd = new Random();
-        int index = rnd.nextInt(4);
-        Resources resources = getBaseContext().getResources();
-        Drawable cur = resources.getDrawable(array[index]);
-        background.setBackground(cur);
-    }
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -110,21 +105,25 @@ public class Sleep extends Activity {
         playing = false;
         Intent MediaServiceIntent = new Intent(this, MediaService.class);
         bindService(MediaServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-        firstPlay = false;
     }
 
-    // 连接音乐服务
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            mMyBinder = (MediaService.MyBinder) service;
-            Log.e(TAG, "Service与Activity已连接");
-        }
+    //界面初始化
+    public void initView() {
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "clock_font.ttf");
+        clock = findViewById(R.id.mRunTime);
+        clock.setTypeface(typeface);
+        musicTitle = findViewById(R.id.musicName);
+        playButton = findViewById(R.id.play);
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
-    };
+        //设置随机背景
+        background = findViewById(R.id.sleep_background);
+        int[] array = {R.drawable.bg_2, R.drawable.bg_3, R.drawable.bg_6, R.drawable.bg_7};
+        Random rnd = new Random();
+        int index = rnd.nextInt(4);
+        Resources resources = getBaseContext().getResources();
+        Drawable cur = resources.getDrawable(array[index]);
+        background.setBackground(cur);
+    }
 
     // 音乐播放按钮
     public void onClickMedia(View v) {
@@ -133,11 +132,11 @@ public class Sleep extends Activity {
                 if (!playing) {
                     mMyBinder.playMusic();
                     Log.e(TAG, "Play music.");
-                    playButton.setBackground(getResources().getDrawable(R.drawable.music_end));
+                    playButton.setBackground(getResources().getDrawable(R.drawable.ic_play_btn_pause));
                 } else {
                     mMyBinder.pauseMusic();
                     Log.e(TAG, "Pause music.");
-                    playButton.setBackground(getResources().getDrawable(R.drawable.music_start));
+                    playButton.setBackground(getResources().getDrawable(R.drawable.ic_play_btn_play));
                 }
                 playing = !playing;
                 break;

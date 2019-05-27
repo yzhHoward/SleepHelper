@@ -14,7 +14,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.howard.sleephelper.R;
-import com.howard.sleephelper.sleepRecord.Bean;
+import com.howard.sleephelper.sleepRecord.RecordBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.Locale;
 
 public class DrawLineChart {
     private LineChart mLineChart;
-    private Bean mRecord;
+    private RecordBean mRecord;
     private Resources mResources;
     private ArrayList<Integer> times;
     private ArrayList<Float> sleepDetails;
@@ -33,9 +33,9 @@ public class DrawLineChart {
      *
      * @param lineChart  折线图元素
      * @param mRecord    睡眠记录
-     * @param mResources
+     * @param mResources 绘图资源
      */
-    public DrawLineChart(LineChart lineChart, Bean mRecord, Resources mResources) {
+    public DrawLineChart(LineChart lineChart, RecordBean mRecord, Resources mResources) {
         mLineChart = lineChart;
         mLineChart.setDrawBorders(false);
         mLineChart.setNoDataText("睡眠时间太短啦！没有足够数据！");
@@ -58,7 +58,7 @@ public class DrawLineChart {
         }
     }
 
-    public void setRecord(Bean mRecord) {
+    public void setRecord(RecordBean mRecord) {
         this.mRecord = mRecord;
         if (mRecord.getDrawChart()) {
             readRecordDetails();
