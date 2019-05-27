@@ -147,7 +147,7 @@ public class GetRecord {
      */
     public void updatePunch(String time) {
         if (remindBeanDao.queryBuilder().list().isEmpty()) {
-            remindBeanDao.insert(new RemindBean(null, ""));
+            remindBeanDao.insert(new RemindBean(null, "22:00"));
         }
         RemindBean remindBean = remindBeanDao.queryBuilder().list().get(0);
         if (remindBean != null) {
@@ -162,6 +162,9 @@ public class GetRecord {
      * @return 提醒的时间
      */
     public String getPunch() {
+        if (remindBeanDao.queryBuilder().list().isEmpty()) {
+            remindBeanDao.insert(new RemindBean(null, "22:00"));
+        }
         return remindBeanDao.queryBuilder().list().get(0).getTime();
     }
 }
