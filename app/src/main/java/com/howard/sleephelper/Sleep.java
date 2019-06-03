@@ -44,6 +44,7 @@ public class Sleep extends Activity {
     private Button playButton;
 
     private long startTime;
+    private int runningTime;
 
     private Timer mRunTimer;
     private Sensors sensor;
@@ -80,6 +81,7 @@ public class Sleep extends Activity {
     //开始记录数据
     public long initData() {
         boolean restart;
+        runningTime = 0;
         restart = this.getIntent().getBooleanExtra("restart", false);
         mGetRecord = new GetRecord(this);
         startRunTimer();
@@ -90,7 +92,7 @@ public class Sleep extends Activity {
             sensor = new Sensors(this, mRecord);
             //startGrayService();
         } else {
-            mRecord = mGetRecord.insertData(calendar.get(Calendar.MONTH) + "-"
+            mRecord = mGetRecord.insertData((calendar.get(Calendar.MONTH) + 1) + "-"
                             + calendar.get(Calendar.DATE),
                     String.format(Locale.getDefault(), "%02d:%02d",
                             calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)));
@@ -127,6 +129,7 @@ public class Sleep extends Activity {
 
     // 音乐播放按钮
     public void onClickMedia(View v) {
+        runningTime = 0;
         switch (v.getId()) {
             case R.id.play:
                 if (!playing) {
@@ -193,6 +196,12 @@ public class Sleep extends Activity {
 
             @Override
             public void run() {
+                if (playing) {
+                    ++runningTime;
+                    if (runningTime > 15) {
+                        mMyBinder.closeMedia();
+                    }
+                }
                 ++minute;
                 if (minute == 60) {
                     minute = 0;
