@@ -8,8 +8,9 @@
     <uses-permission android:name="android.permission.SENSOR_INFO"/>
     <uses-permission android:name="android.permission.SENSOR_ENABLE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <application
+        android:name=".App"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -51,11 +52,25 @@
             android:enabled="true"
             android:process=":daemon_service"/>
 
+        <service android:name=".service.KeepService"
+            android:process=":work"/>
+
+        <service android:name=".service.GoSleepService"
+            android:enabled="true"
+            android:process=":go_sleep"/>
+        <receiver
+            android:name=".GosleepBroadcastReceiver" >
+            <intent-filter >
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
         <service android:name=".service.PlayerMusicService"
             android:enabled="true"
             android:process=":music_service"/>
 
-        <service android:name=".service.MediaService"/>
+        <service
+            android:name=".service.MediaService"
+            android:enabled="true"/>
 
         <service
             android:name=".service.AliveJobService"

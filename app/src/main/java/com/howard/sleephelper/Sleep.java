@@ -19,11 +19,15 @@ import android.widget.Toast;
 
 import com.howard.sleephelper.sensors.Sensors;
 import com.howard.sleephelper.service.DaemonService;
+import com.howard.sleephelper.service.GoSleepService;
 import com.howard.sleephelper.service.GrayService;
+import com.howard.sleephelper.service.KeepService;
 import com.howard.sleephelper.service.MediaService;
 import com.howard.sleephelper.service.PlayerMusicService;
 import com.howard.sleephelper.sleepRecord.GetRecord;
 import com.howard.sleephelper.sleepRecord.RecordBean;
+import com.shihoo.daemon.DaemonEnv;
+import com.shihoo.daemon.WatchProcessPrefHelper;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -73,8 +77,10 @@ public class Sleep extends Activity {
         setContentView(R.layout.sleep);
         //mJobManager = JobSchedulerManager.getJobSchedulerInstance(this);
         //mJobManager.startJobScheduler();
+
         initView();
         initMedia();
+
         startTime = initData();
     }
 
@@ -99,7 +105,10 @@ public class Sleep extends Activity {
             sensor = new Sensors(this, mRecord);
         }
         //startPlayMusicService();
-//        startDaemonService();
+        startDaemonService();
+        WatchProcessPrefHelper.setIsStartSDaemon(this,true);
+        DaemonEnv.startServiceSafely(this, KeepService.class,false);
+        stopGosleepService();
         return calendar.getTimeInMillis();
     }
 
@@ -165,7 +174,7 @@ public class Sleep extends Activity {
                     calendar.getTimeInMillis() - startTime, deepTime, swallowTime, awakeTime);
         }
         stopRunTimer();
-//        stopDaemonService();
+        stopDaemonService();
         //stopPlayMusicService();
         //stopGrayService();
         Intent i = new Intent();
@@ -244,6 +253,15 @@ public class Sleep extends Activity {
         stopService(intent);
     }
 
+    private void startGosleepService(){
+        Intent intent = new Intent(Sleep.this, GoSleepService.class);
+        startService(intent);
+    }
+
+    private void stopGosleepService(){
+        Intent intent = new Intent(Sleep.this, GoSleepService.class);
+        stopService(intent);
+    }
     private void startDaemonService() {
         Intent intent = new Intent(Sleep.this, DaemonService.class);
         startService(intent);
@@ -274,10 +292,12 @@ public class Sleep extends Activity {
         }
 
         unbindService(mServiceConnection);
-
+        WatchProcessPrefHelper.setIsStartSDaemon(this,false);
+        DaemonEnv.stopAllServices(this);
         stopRunTimer();
 //        stopPlayMusicService();
-//        stopDaemonService();
+        stopDaemonService();
+        startGosleepService();
         //mJobManager.stopJobScheduler();
     }
 }

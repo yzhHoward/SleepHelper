@@ -6,13 +6,16 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.howard.sleephelper.service.KeepService;
 import com.howard.sleephelper.sleepRecord.GetRecord;
 import com.howard.sleephelper.sleepRecord.RecordBean;
+import com.shihoo.daemon.DaemonEnv;
 
 import java.util.Random;
 
@@ -29,8 +32,10 @@ public class MainActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         readLog();
         initView();
+
     }
 
     //设置随机背景
@@ -58,7 +63,7 @@ public class MainActivity extends Activity {
     //按钮
     public void ClickRecord(View v) {
         Intent i = new Intent();
-        i.setClass(MainActivity.this, Record.class);
+        i.setClass(MainActivity.this, CalendarPage.class);
         MainActivity.this.startActivity(i);
         MainActivity.this.finish();
     }
