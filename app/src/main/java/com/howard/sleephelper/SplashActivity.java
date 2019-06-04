@@ -9,6 +9,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
+
+import com.howard.sleephelper.service.KeepService;
+import com.shihoo.daemon.DaemonEnv;
 
 /**
  * 整个程序的入口，splash界面
@@ -24,7 +28,7 @@ public class SplashActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //设置背景
+
         setContentView(R.layout.splash);
 
         myPermission();
@@ -40,7 +44,7 @@ public class SplashActivity extends Activity {
             }
         }, DELAY_TIME);
 
-    }
+        }
 
     //检测是否有存储权限，没有申请提权
     public void myPermission() {

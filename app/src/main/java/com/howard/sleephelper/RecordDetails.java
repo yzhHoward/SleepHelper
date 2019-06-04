@@ -141,7 +141,7 @@ public class RecordDetails extends Activity {
 
     private void readLog() {
         GetRecord mGetRecord = new GetRecord(this);
-        records = mGetRecord.queryByDate(date);
+        //records = mGetRecord.queryByDate(date);
         mRecord = records.get(idx);
         max = records.size() - 1;
         String[] arr = mRecord.getDate().split("-");

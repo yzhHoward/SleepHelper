@@ -28,7 +28,7 @@ public class Record extends Activity {
     private List<Trace> traceList = new ArrayList<>();
     private TraceListAdapter adapter;
 
-    private String date;
+    private String date="";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,8 @@ public class Record extends Activity {
     //睡眠记录数据初始化
     private void initData() {
         GetRecord mGetRecord = new GetRecord(this);
-        List<RecordBean> records = mGetRecord.queryByDate(date);
+        List<RecordBean> records = mGetRecord.queryAllList();
+        //List<RecordBean> records = mGetRecord.queryByDate(date);
         if (records.size() == 1) {
             Intent i = new Intent(Record.this, RecordDetails.class);
             i.putExtra("position", 0);
