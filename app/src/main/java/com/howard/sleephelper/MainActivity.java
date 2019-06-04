@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
     //按钮
     public void ClickRecord(View v) {
         Intent i = new Intent();
-        i.setClass(MainActivity.this, MyCalendar.class);
+        i.setClass(MainActivity.this, CalendarPage.class);
         MainActivity.this.startActivity(i);
         MainActivity.this.finish();
     }

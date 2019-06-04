@@ -4,17 +4,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import com.howard.sleephelper.service.GoSleepService;
 import com.shihoo.daemon.DaemonEnv;
 
-public class gosleepBroadcastReceiver extends BroadcastReceiver {
+public class GosleepBroadcastReceiver extends BroadcastReceiver {
     static final String ACTION = "android.intent.action.BOOT_COMPLETED";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(ACTION)) {
+        if (ACTION.equals(intent.getAction())) {
             Toast.makeText(context, "提醒服务开始", Toast.LENGTH_SHORT).show();
 
             Intent ifsleepIntent = new Intent(context, GoSleepService.class);

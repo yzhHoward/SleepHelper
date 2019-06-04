@@ -44,9 +44,6 @@
 
         <activity android:name=".AfterSleep"
             android:launchMode="singleTask"/>
-        <activity android:name=".MyCalendar"
-            android:theme="@style/Theme.NoAction"
-            android:launchMode="standard"/>
 
         <activity android:name=".CalendarPage"
             android:theme="@style/Theme.NoAction"/>
@@ -62,7 +59,7 @@
             android:enabled="true"
             android:process=":go_sleep"/>
         <receiver
-            android:name=".gosleepBroadcastReceiver" >
+            android:name=".GosleepBroadcastReceiver" >
             <intent-filter >
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
