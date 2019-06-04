@@ -129,6 +129,16 @@ public class GetRecord {
         return recordBeanDao.queryBuilder().where(RecordBeanDao.Properties.Date.eq(date)).orderAsc(RecordBeanDao.Properties.Id).list();
     }
 
+    public boolean[] queryByMonth(String month, int days) {
+        boolean[] result = new boolean[days + 1];
+        String date;
+        for (int i = 1; i <= days; ++i) {
+            date = month + "-" + days;
+            result[i] = recordBeanDao.queryBuilder().where(RecordBeanDao.Properties.Date.eq(date)) == null;
+        }
+        return result;
+    }
+
     public RecordBean getRecordById(long id) {
         return recordBeanDao.queryBuilder().where(RecordBeanDao.Properties.Id.eq(id)).build().unique();
     }

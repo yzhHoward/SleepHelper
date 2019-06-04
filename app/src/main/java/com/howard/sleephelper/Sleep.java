@@ -17,15 +17,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.howard.sleephelper.sensors.Sensors;
 import com.howard.sleephelper.service.DaemonService;
 import com.howard.sleephelper.service.GoSleepService;
 import com.howard.sleephelper.service.GrayService;
-import com.howard.sleephelper.service.KeepService;
 import com.howard.sleephelper.service.MediaService;
 import com.howard.sleephelper.service.PlayerMusicService;
-import com.howard.sleephelper.sleepRecord.GetRecord;
-import com.howard.sleephelper.sleepRecord.RecordBean;
+import com.howard.sleephelper.service.SensorService;
 import com.shihoo.daemon.DaemonEnv;
 import com.shihoo.daemon.WatchProcessPrefHelper;
 
@@ -47,13 +44,9 @@ public class Sleep extends Activity {
 
     private Button playButton;
 
-    private long startTime;
     private int runningTime;
 
     private Timer mRunTimer;
-    private Sensors sensor;
-    private RecordBean mRecord;
-    private GetRecord mGetRecord;
     private boolean playing;
     //private JobSchedulerManager mJobManager;
     private MediaService.MyBinder mMyBinder;
@@ -80,36 +73,19 @@ public class Sleep extends Activity {
 
         initView();
         initMedia();
-
-        startTime = initData();
+        initData();
     }
 
     //开始记录数据
-    public long initData() {
-        boolean restart;
+    public void initData() {
         runningTime = 0;
-        restart = this.getIntent().getBooleanExtra("restart", false);
-        mGetRecord = new GetRecord(this);
         startRunTimer();
         Calendar calendar = Calendar.getInstance();
-        //注意：若启用mJobManager则需要重新调整reStart内容
-        if (restart) {
-            mRecord = mGetRecord.getLatestRecord();
-            sensor = new Sensors(this, mRecord);
-            //startGrayService();
-        } else {
-            mRecord = mGetRecord.insertData((calendar.get(Calendar.MONTH) + 1) + "-"
-                            + calendar.get(Calendar.DATE),
-                    String.format(Locale.getDefault(), "%02d:%02d",
-                            calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)));
-            sensor = new Sensors(this, mRecord);
-        }
         //startPlayMusicService();
-        startDaemonService();
-        WatchProcessPrefHelper.setIsStartSDaemon(this,true);
-        DaemonEnv.startServiceSafely(this, KeepService.class,false);
         stopGosleepService();
-        return calendar.getTimeInMillis();
+        startDaemonService();
+        WatchProcessPrefHelper.setIsStartSDaemon(this, true);
+        DaemonEnv.startServiceSafely(this, SensorService.class, false);
     }
 
     public void initMedia() {
@@ -164,22 +140,14 @@ public class Sleep extends Activity {
     // 停止记录按钮
     public void onRunningClick2(View v) {
         Toast.makeText(this, "停止记录！", Toast.LENGTH_SHORT).show();
-        int[] details = sensor.stopSensor();
-        int deepTime = details[0];
-        int swallowTime = details[1];
-        int awakeTime = details[2];
-        Calendar calendar = Calendar.getInstance();
-        if (mRecord != null) {
-            mGetRecord.finalUpdate(mRecord, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
-                    calendar.getTimeInMillis() - startTime, deepTime, swallowTime, awakeTime);
-        }
         stopRunTimer();
         stopDaemonService();
+        WatchProcessPrefHelper.setIsStartSDaemon(this, false);
+        DaemonEnv.stopAllServices(this);
         //stopPlayMusicService();
         //stopGrayService();
         Intent i = new Intent();
         i.setClass(Sleep.this, AfterSleep.class);
-        i.putExtra("recordId", mRecord.getId());
         Sleep.this.startActivity(i);
         Sleep.this.finish();
     }
@@ -230,7 +198,7 @@ public class Sleep extends Activity {
             }
         };
         mRunTimer = new Timer();
-        mRunTimer.schedule(mTask, 60000 - calendar.get(Calendar.MINUTE) * 1000
+        mRunTimer.schedule(mTask, 60000 - calendar.get(Calendar.SECOND) * 1000
                 - calendar.get(Calendar.MILLISECOND), 60000);
     }
 
@@ -253,15 +221,16 @@ public class Sleep extends Activity {
         stopService(intent);
     }
 
-    private void startGosleepService(){
+    private void startGosleepService() {
         Intent intent = new Intent(Sleep.this, GoSleepService.class);
         startService(intent);
     }
 
-    private void stopGosleepService(){
+    private void stopGosleepService() {
         Intent intent = new Intent(Sleep.this, GoSleepService.class);
         stopService(intent);
     }
+
     private void startDaemonService() {
         Intent intent = new Intent(Sleep.this, DaemonService.class);
         startService(intent);
@@ -285,14 +254,13 @@ public class Sleep extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        sensor.stopSensor();
 
         if (mMyBinder != null && playing) {
             mMyBinder.closeMedia();
         }
-
         unbindService(mServiceConnection);
-        WatchProcessPrefHelper.setIsStartSDaemon(this,false);
+
+        WatchProcessPrefHelper.setIsStartSDaemon(this, false);
         DaemonEnv.stopAllServices(this);
         stopRunTimer();
 //        stopPlayMusicService();

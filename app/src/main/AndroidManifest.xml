@@ -52,14 +52,15 @@
             android:enabled="true"
             android:process=":daemon_service"/>
 
-        <service android:name=".service.KeepService"
+        <service
+            android:name=".service.SensorService"
             android:process=":work"/>
 
         <service android:name=".service.GoSleepService"
             android:enabled="true"
             android:process=":go_sleep"/>
-        <receiver
-            android:name=".GosleepBroadcastReceiver" >
+
+        <receiver android:name=".GoSleepBroadcastReceiver">
             <intent-filter >
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>

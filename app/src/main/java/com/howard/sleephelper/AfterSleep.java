@@ -57,11 +57,10 @@ public class AfterSleep extends Activity {
         Resources resources = getBaseContext().getResources();
         Drawable cur = resources.getDrawable(array[index]);
         background.setBackground(cur);
-        long recordId = this.getIntent().getLongExtra("recordId", 0);
+        //long recordId = this.getIntent().getLongExtra("recordId", 0);
 
         GetRecord mGetRecord = new GetRecord(this);
-        mRecord = mGetRecord.getRecordById(recordId);
-
+        mRecord = mGetRecord.getLatestRecord();
         initView();
     }
 

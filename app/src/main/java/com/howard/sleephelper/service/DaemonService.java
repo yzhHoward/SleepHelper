@@ -15,6 +15,7 @@ import com.howard.sleephelper.R;
 public class DaemonService extends Service {
     public static final int NOTICE_ID = 100;
     private NotificationManager manager;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -24,14 +25,12 @@ public class DaemonService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        manager=(NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        Notification.Builder sleep=createNotification();
-        manager.notify(100,sleep.build());
-
-
+        manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Notification.Builder sleep = createNotification();
+        manager.notify(NOTICE_ID, sleep.build());
     }
-    Notification.Builder createNotification(){
+
+    Notification.Builder createNotification() {
         Notification.Builder builder = new Notification.Builder(this);
         builder.setSmallIcon(R.drawable.sleep_1)
                 .setContentTitle("睡眠助手")
@@ -39,8 +38,8 @@ public class DaemonService extends Service {
                 .setOngoing(true)
                 .setDefaults(NotificationCompat.DEFAULT_ALL);
 
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
-            NotificationChannel channel=new NotificationChannel("1","sleepmsg",NotificationManager.IMPORTANCE_DEFAULT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(Integer.toString(NOTICE_ID), "睡眠记录", NotificationManager.IMPORTANCE_DEFAULT);
             channel.canBypassDnd();
             channel.getAudioAttributes();
             channel.setBypassDnd(true);
@@ -50,12 +49,13 @@ public class DaemonService extends Service {
         }
         return builder;
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         NotificationManager mManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        mManager.cancel(NOTICE_ID);
-        /*Intent intent = new Intent(getApplicationContext(), DaemonService.class);
-        startService(intent);*/
+        if (mManager != null) {
+            mManager.cancel(NOTICE_ID);
+        }
     }
 }
