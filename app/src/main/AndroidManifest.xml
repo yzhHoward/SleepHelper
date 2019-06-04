@@ -31,7 +31,6 @@
             android:launchMode="standard"/>
 
         <activity android:name=".Record"
-            android:theme="@style/Theme.NoAction"
             android:launchMode="standard"/>
 
         <activity android:name=".RecordDetails"
@@ -48,6 +47,9 @@
         <activity android:name=".MyCalendar"
             android:theme="@style/Theme.NoAction"
             android:launchMode="standard"/>
+
+        <activity android:name=".CalendarPage"
+            android:theme="@style/Theme.NoAction"/>
 
         <service android:name=".service.DaemonService"
             android:enabled="true"
