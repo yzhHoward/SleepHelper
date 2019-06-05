@@ -39,7 +39,7 @@ public class DaemonService extends Service {
                 .setDefaults(NotificationCompat.DEFAULT_ALL);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(Integer.toString(NOTICE_ID), "睡眠记录", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel = new NotificationChannel("1", "睡眠记录", NotificationManager.IMPORTANCE_MIN);
             channel.canBypassDnd();
             channel.getAudioAttributes();
             channel.setBypassDnd(true);

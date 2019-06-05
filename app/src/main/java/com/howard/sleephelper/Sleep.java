@@ -265,7 +265,7 @@ public class Sleep extends Activity {
         stopRunTimer();
 //        stopPlayMusicService();
         stopDaemonService();
-        startGosleepService();
+        //startGosleepService();
         //mJobManager.stopJobScheduler();
     }
 }
