@@ -9,7 +9,6 @@ import com.howard.sleephelper.sensors.Sensors;
 import com.howard.sleephelper.sleepRecord.GetRecord;
 import com.howard.sleephelper.sleepRecord.RecordBean;
 import com.shihoo.daemon.AbsWorkService;
-
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;

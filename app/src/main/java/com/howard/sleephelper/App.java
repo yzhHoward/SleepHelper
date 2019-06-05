@@ -12,6 +12,7 @@ public class App extends Application {
         //需要在 Application 的 onCreate() 中调用一次 DaemonEnv.initialize()
         // 每一次创建进程的时候都需要对Daemon环境进行初始化，所以这里没有判断进程
         String processName = ApkHelper.getProcessName(this.getApplicationContext());
+
         if ("com.sleephelper.howard.sleephelper".equals(processName)) {
             // 主进程 进行一些其他的操作
             Log.e("wsh-daemon", "启动主进程");
