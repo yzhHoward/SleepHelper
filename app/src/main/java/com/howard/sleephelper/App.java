@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.howard.sleephelper.service.SensorService;
+import com.howard.sleephelper.utils.ApkHelper;
 import com.shihoo.daemon.DaemonEnv;
 
 public class App extends Application {
@@ -14,13 +15,12 @@ public class App extends Application {
         String processName = ApkHelper.getProcessName(this.getApplicationContext());
         if ("com.sleephelper.howard.sleephelper".equals(processName)) {
             // 主进程 进行一些其他的操作
-            Log.e("wsh-daemon", "启动主进程");
-
+            Log.e("app", "启动主进程");
         } else if ("com.sleephelper.howard.sleephelper:work".equals(processName)) {
-            Log.e("wsh-daemon", "启动了工作进程");
+            Log.e("app", "启动了工作进程");
         } else if ("com.sleephelper.howard.sleephelper:watch".equals(processName)) {
             DaemonEnv.mWorkServiceClass = SensorService.class;
-            Log.e("wsh-daemon", "启动了看门狗进程");
+            Log.e("app", "启动了看门狗进程");
         }
     }
 }
