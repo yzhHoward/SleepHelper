@@ -80,7 +80,6 @@ public class Sleep extends Activity {
     public void initData() {
         runningTime = 0;
         startRunTimer();
-        Calendar calendar = Calendar.getInstance();
         //startPlayMusicService();
         stopGosleepService();
         startDaemonService();
@@ -140,10 +139,10 @@ public class Sleep extends Activity {
     // 停止记录按钮
     public void onRunningClick2(View v) {
         Toast.makeText(this, "停止记录！", Toast.LENGTH_SHORT).show();
-        stopRunTimer();
-        stopDaemonService();
         WatchProcessPrefHelper.setIsStartSDaemon(this, false);
         DaemonEnv.stopAllServices(this);
+        stopRunTimer();
+        stopDaemonService();
         //stopPlayMusicService();
         //stopGrayService();
         Intent i = new Intent();

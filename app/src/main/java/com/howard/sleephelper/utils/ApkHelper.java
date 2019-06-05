@@ -1,14 +1,10 @@
-package com.howard.sleephelper;
+package com.howard.sleephelper.utils;
 
 import android.app.ActivityManager;
 import android.content.Context;
 
 import java.util.List;
 
-/**
- * Created by shihoo ON 2018/12/13.
- * Email shihu.wang@bodyplus.cc 451082005@qq.com
- */
 public class ApkHelper {
 
     public static String getProcessName(Context context){

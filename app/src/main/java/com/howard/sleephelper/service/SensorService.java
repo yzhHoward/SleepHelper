@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Messenger;
+import android.support.annotation.NonNull;
 
 import com.howard.sleephelper.sensors.Sensors;
 import com.howard.sleephelper.sleepRecord.GetRecord;
@@ -20,7 +21,7 @@ import io.reactivex.functions.Consumer;
 
 public class SensorService extends AbsWorkService {
 
-    private boolean IsShouldStopService;
+    private boolean isShouldStopService;
     private Disposable mDisposable;
     private Sensors sensor;
     private RecordBean mRecord;
@@ -36,7 +37,7 @@ public class SensorService extends AbsWorkService {
      */
     @Override
     public Boolean shouldStopService(Intent intent, int flags, int startId) {
-        return IsShouldStopService;
+        return isShouldStopService;
     }
 
     /**
@@ -50,6 +51,7 @@ public class SensorService extends AbsWorkService {
         return mDisposable != null && !mDisposable.isDisposed();
     }
 
+    @NonNull
     @Override
     public IBinder onBindService(Intent intent, Void v) {
         // 此处必须有返回，否则绑定无回调
@@ -65,11 +67,7 @@ public class SensorService extends AbsWorkService {
 
     @Override
     public void stopWork(Intent intent, int flags, int startId) {
-        IsShouldStopService = true;
-        //取消对任务的订阅
-        if (mDisposable != null && !mDisposable.isDisposed()) {
-            mDisposable.dispose();
-        }
+        isShouldStopService = true;
         int[] details = sensor.stopSensor();
         int deepTime = details[0];
         int swallowTime = details[1];
@@ -78,6 +76,10 @@ public class SensorService extends AbsWorkService {
         if (mRecord != null) {
             mGetRecord.finalUpdate(mRecord, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
                     calendar.getTimeInMillis() - startTime, deepTime, swallowTime, awakeTime);
+        }
+        //取消对任务的订阅
+        if (mDisposable != null && !mDisposable.isDisposed()) {
+            mDisposable.dispose();
         }
     }
 
@@ -102,7 +104,7 @@ public class SensorService extends AbsWorkService {
             sensor = new Sensors(this, mRecord);
         }
         mDisposable = Observable
-                .interval(3, TimeUnit.SECONDS)
+                .interval(1, TimeUnit.MINUTES)
                 //取消任务时取消定时唤醒
                 .doOnDispose(new Action() {
                     @Override
