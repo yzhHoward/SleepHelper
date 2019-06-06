@@ -23,6 +23,7 @@ import com.howard.sleephelper.service.GrayService;
 import com.howard.sleephelper.service.MediaService;
 import com.howard.sleephelper.service.PlayerMusicService;
 import com.howard.sleephelper.service.SensorService;
+import com.howard.sleephelper.utils.JobSchedulerManager;
 import com.shihoo.daemon.DaemonEnv;
 import com.shihoo.daemon.WatchProcessPrefHelper;
 
@@ -48,7 +49,7 @@ public class Sleep extends Activity {
 
     private Timer mRunTimer;
     private boolean playing;
-    //private JobSchedulerManager mJobManager;
+    private JobSchedulerManager mJobManager;
     private MediaService.MyBinder mMyBinder;
     // 连接音乐服务
     private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -83,6 +84,7 @@ public class Sleep extends Activity {
         //startPlayMusicService();
         stopGosleepService();
         startDaemonService();
+
         WatchProcessPrefHelper.setIsStartSDaemon(this, true);
         DaemonEnv.startServiceSafely(this, SensorService.class, false);
     }

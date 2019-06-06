@@ -1,4 +1,4 @@
-package com.howard.sleephelper.utils;
+package com.howard.sleephelper;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

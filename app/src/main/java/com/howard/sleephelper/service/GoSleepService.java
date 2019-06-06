@@ -20,13 +20,15 @@ public class GoSleepService extends Service {
     boolean notification_on = false;
     NotificationManager mManager;
     Notification.Builder sleep;
+    int hour;
+    int min;
     boolean ifSleep = false;
     TimerTask timerTask = new TimerTask() {
         @Override
         public void run() {
             if (!ifSleep && !notification_on) {
                 Calendar now = Calendar.getInstance();
-                if ((now.get(Calendar.HOUR_OF_DAY)) > 14) {
+                if ((now.get(Calendar.HOUR_OF_DAY)) > hour&&(now.get(Calendar.MINUTE))>min) {
                     mManager.notify(2, sleep.build());
                     notification_on = true;
                 }
@@ -38,12 +40,17 @@ public class GoSleepService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        GetRecord myGet=new GetRecord(this);
+        String remind=myGet.getRemind();
+        String[] res = remind.split(":");
+        hour=Integer.parseInt(res[0]);
+        min=Integer.parseInt(res[1]);
         mManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         sleep = createNotification();
         ifSleep = ifSleepToday();
         startForeground(3, createMyNotification().build());
         mManager.cancel(3);
-        timer.schedule(timerTask, 0, 500);
+        timer.schedule(timerTask, 0, 60000);
     }
 
     Notification.Builder createMyNotification() {

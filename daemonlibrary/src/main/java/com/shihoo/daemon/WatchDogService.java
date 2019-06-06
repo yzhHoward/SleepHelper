@@ -56,8 +56,8 @@ public class WatchDogService extends Service {
     private void startBindWorkServices(){
         if (DaemonEnv.mWorkServiceClass != null) {
             DaemonEnv.startServiceMayBind(WatchDogService.this, DaemonEnv.mWorkServiceClass, mConnection,IsShouldStopSelf);
-            DaemonEnv.startServiceSafely(WatchDogService.this,
-                    PlayMusicService.class,IsShouldStopSelf);
+            /*DaemonEnv.startServiceSafely(WatchDogService.this,
+                    PlayMusicService.class,IsShouldStopSelf);*/
         }
     }
 

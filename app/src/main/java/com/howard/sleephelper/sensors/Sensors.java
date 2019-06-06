@@ -5,12 +5,15 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.howard.sleephelper.sleepRecord.GetRecord;
 import com.howard.sleephelper.sleepRecord.RecordBean;
 
 import java.util.Calendar;
+
+import static android.content.ContentValues.TAG;
 
 public class Sensors {
     private int deepTime;
@@ -25,6 +28,7 @@ private RecordBean mRecord;
     private GetRecord mGetRecord;
 
     public Sensors(Context context, RecordBean mRecord) {
+
         getSensorManager(context);
         startSensor();
         this.mRecord = mRecord;
@@ -59,6 +63,8 @@ private RecordBean mRecord;
                         ++deepTime;
                     if (k >= 10)
                         k /= 10;
+                    //liu test
+                    Log.d(TAG, "onSensorChanged: go");
                     mGetRecord.update(mRecord, getTime()+","+k+" ");
                     k = 0;
                 }
@@ -97,7 +103,8 @@ private RecordBean mRecord;
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         if (mSensorManager != null) {
             Accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-//            Gyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+
+// Gyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         } else {
             Toast.makeText(context, "无法获取传感器，请在设置中授权！", Toast.LENGTH_SHORT).show();
         }
@@ -105,7 +112,7 @@ private RecordBean mRecord;
 
     private void startSensor() {
         if (mSensorManager != null) {
-            mSensorManager.registerListener(listener, Accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+            mSensorManager.registerListener(listener, Accelerometer, 50000);
 //            mSensorManager.registerListener(listener, Gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
         }
     }

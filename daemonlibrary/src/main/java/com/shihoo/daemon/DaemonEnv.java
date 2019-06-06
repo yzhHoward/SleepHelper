@@ -3,6 +3,7 @@ package com.shihoo.daemon;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -52,7 +53,8 @@ public final class DaemonEnv {
         }
         Log.d("wsh-daemon", "安全启动服务。。: "+i.getSimpleName());
         try {
-            context.startService(new Intent(context,i));
+            if (Build.VERSION.SDK_INT>Build.VERSION_CODES.O) context.startForegroundService(new Intent(context,i));
+            else context.startService((new Intent(context,i)));
         } catch (Exception ignored) {
 
         }

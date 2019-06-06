@@ -171,7 +171,7 @@ public class GetRecord {
      *
      * @return 提醒的时间
      */
-    public String getPunch() {
+    public String getRemind() {
         if (remindBeanDao.queryBuilder().list().isEmpty()) {
             remindBeanDao.insert(new RemindBean(null, "22:00"));
         }
