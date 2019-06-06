@@ -21,7 +21,7 @@ public class App extends Application {
             Log.e("app", "启动了工作进程");
         } else if ("com.sleephelper.howard.sleephelper:watch".equals(processName)) {
             DaemonEnv.mWorkServiceClass = SensorService.class;
-            Log.e("app", "启动了看门狗进程");
+            Log.e("app", "启动了守护进程");
         }
     }
 }

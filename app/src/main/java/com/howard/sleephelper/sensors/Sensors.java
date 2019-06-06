@@ -23,8 +23,8 @@ public class Sensors {
     private float k = 0;
     private SensorManager mSensorManager;
     private Sensor Accelerometer;
-//    private Sensor Gyroscope;
-private RecordBean mRecord;
+    //    private Sensor Gyroscope;
+    private RecordBean mRecord;
     private GetRecord mGetRecord;
 
     public Sensors(Context context, RecordBean mRecord) {
@@ -63,9 +63,8 @@ private RecordBean mRecord;
                         ++deepTime;
                     if (k >= 10)
                         k /= 10;
-                    //liu test
                     Log.d(TAG, "onSensorChanged: go");
-                    mGetRecord.update(mRecord, getTime()+","+k+" ");
+                    mGetRecord.update(mRecord, getTime() + "," + k + " ");
                     k = 0;
                 }
             }
@@ -103,8 +102,7 @@ private RecordBean mRecord;
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         if (mSensorManager != null) {
             Accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-
-// Gyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+//            Gyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         } else {
             Toast.makeText(context, "无法获取传感器，请在设置中授权！", Toast.LENGTH_SHORT).show();
         }
@@ -112,7 +110,7 @@ private RecordBean mRecord;
 
     private void startSensor() {
         if (mSensorManager != null) {
-            mSensorManager.registerListener(listener, Accelerometer, 50000);
+            mSensorManager.registerListener(listener, Accelerometer, 100000);
 //            mSensorManager.registerListener(listener, Gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
         }
     }
