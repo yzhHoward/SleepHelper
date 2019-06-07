@@ -52,7 +52,7 @@ public class GoSleepService extends Service {
         mManager.cancel(3);
         timer.schedule(timerTask, 0, 60000);
     }
-
+    //此为开机自弃成功与否测试
     Notification.Builder createMyNotification() {
         Notification.Builder builder = new Notification.Builder(this);
         builder
@@ -71,6 +71,10 @@ public class GoSleepService extends Service {
         return builder;
     }
 
+    /**创建通知及通知频道
+     *
+     * @return 通知构造器
+     */
     Notification.Builder createNotification() {
         Notification.Builder builder = new Notification.Builder(this);
         builder.setSmallIcon(R.drawable.sleep_1)
@@ -89,7 +93,11 @@ public class GoSleepService extends Service {
         }
         return builder;
     }
-
+    /**
+     * 今日是否睡觉
+     *
+     * @return 已睡觉，未睡觉
+    **/
     public boolean ifSleepToday() {
         Calendar calendar = Calendar.getInstance();
         return ((new GetRecord(this)).queryByDate(((calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH))).size() > 0);

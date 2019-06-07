@@ -30,6 +30,10 @@ public class DaemonService extends Service {
         manager.notify(NOTICE_ID, sleep.build());
     }
 
+    /**创建通知及通知频道
+     *
+     * @return 通知构造器
+     */
     Notification.Builder createNotification() {
         Notification.Builder builder = new Notification.Builder(this);
         builder.setSmallIcon(R.drawable.sleep_1)
