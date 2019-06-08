@@ -1,7 +1,6 @@
 package com.howard.sleephelper;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -101,9 +100,6 @@ public class RecordDetails extends Activity {
 
     //左上的返回
     public void ClickBackDetails(View v) {
-        Intent i = new Intent();
-        i.setClass(RecordDetails.this, Record.class);
-        RecordDetails.this.startActivity(i);
         RecordDetails.this.finish();
     }
 
@@ -141,7 +137,7 @@ public class RecordDetails extends Activity {
 
     private void readLog() {
         GetRecord mGetRecord = new GetRecord(this);
-        //records = mGetRecord.queryByDate(date);
+        records = mGetRecord.queryByDate(date);
         mRecord = records.get(idx);
         max = records.size() - 1;
         String[] arr = mRecord.getDate().split("-");

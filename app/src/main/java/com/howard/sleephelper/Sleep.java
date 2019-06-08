@@ -1,8 +1,11 @@
 package com.howard.sleephelper;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.graphics.Typeface;
@@ -23,7 +26,6 @@ import com.howard.sleephelper.service.GrayService;
 import com.howard.sleephelper.service.MediaService;
 import com.howard.sleephelper.service.PlayerMusicService;
 import com.howard.sleephelper.service.SensorService;
-import com.howard.sleephelper.utils.JobSchedulerManager;
 import com.shihoo.daemon.DaemonEnv;
 import com.shihoo.daemon.WatchProcessPrefHelper;
 
@@ -48,8 +50,9 @@ public class Sleep extends Activity {
     private int runningTime;
 
     private Timer mRunTimer;
+
     private boolean playing;
-    private JobSchedulerManager mJobManager;
+    //private JobSchedulerManager mJobManager;
     private MediaService.MyBinder mMyBinder;
     // 连接音乐服务
     private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -65,6 +68,19 @@ public class Sleep extends Activity {
         }
     };
 
+    private BroadcastReceiver mScreenOReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if (action != null && action.equals("android.intent.action.SCREEN_ON")) {
+                stopRunTimer();
+                startRunTimer();
+            }
+        }
+
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +91,9 @@ public class Sleep extends Activity {
         initView();
         initMedia();
         initData();
+
+        IntentFilter mScreenOnFilter = new IntentFilter("android.intent.action.SCREEN_ON");
+        this.registerReceiver(mScreenOReceiver, mScreenOnFilter);
     }
 
     //开始记录数据
@@ -163,10 +182,7 @@ public class Sleep extends Activity {
     }
 
     //计时器
-    private void startRunTimer() {
-        Calendar calendar = Calendar.getInstance();
-        clock.setText(String.format(Locale.getDefault(), "%02d:%02d",
-                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)));
+    public void startRunTimer() {
         TimerTask mTask = new TimerTask() {
             Calendar calendar = Calendar.getInstance();
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -198,6 +214,9 @@ public class Sleep extends Activity {
                 });
             }
         };
+        Calendar calendar = Calendar.getInstance();
+        clock.setText(String.format(Locale.getDefault(), "%02d:%02d",
+                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)));
         mRunTimer = new Timer();
         mRunTimer.schedule(mTask, 60000 - calendar.get(Calendar.SECOND) * 1000
                 - calendar.get(Calendar.MILLISECOND), 60000);
@@ -255,6 +274,7 @@ public class Sleep extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        this.unregisterReceiver(mScreenOReceiver);
 
         if (mMyBinder != null && playing) {
             mMyBinder.closeMedia();

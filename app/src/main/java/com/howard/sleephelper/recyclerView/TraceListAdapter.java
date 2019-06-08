@@ -2,7 +2,7 @@ package com.howard.sleephelper.recyclerView;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +19,7 @@ public class TraceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private LayoutInflater inflater;
     private List<Trace> traceList;
     private Context context;
+    private String date;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mDate, mTime;
@@ -39,23 +40,21 @@ public class TraceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    public TraceListAdapter(Context context, List<Trace> traceList) {
+    public TraceListAdapter(Context context, List<Trace> traceList, String date) {
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.traceList = traceList;
+        this.date = date;
     }
 
     @Override
-    @Nullable
-    /**
-     * 用来展示睡眠记录的列表
-     */
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    @NonNull
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ViewHolder(inflater.inflate(R.layout.list_cell, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         ViewHolder itemHolder = (ViewHolder) holder;
         if (position == 0) {
             // 第一行头的竖线不显示
@@ -73,6 +72,7 @@ public class TraceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     @Override
                     public void onClick(View v) {
                         Intent i = new Intent(context, RecordDetails.class);
+                        i.putExtra("date", date);
                         i.putExtra("position", holder.getAdapterPosition());
                         context.startActivity(i);
                     }
@@ -83,6 +83,7 @@ public class TraceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     @Override
                     public void onClick(View v) {
                         Intent i = new Intent(context, RecordDetails.class);
+                        i.putExtra("date", date);
                         i.putExtra("position", holder.getAdapterPosition());
                         context.startActivity(i);
                     }

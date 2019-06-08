@@ -5,6 +5,9 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -12,17 +15,28 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.TimePickerView;
-import com.howard.sleephelper.sleepRecord.RecordBean;
+import com.howard.sleephelper.calendarInfo.CustomDayView;
 import com.howard.sleephelper.sleepRecord.GetRecord;
+import com.howard.sleephelper.sleepRecord.RecordBean;
+import com.ldf.calendar.Utils;
+import com.ldf.calendar.component.CalendarAttr;
+import com.ldf.calendar.component.CalendarAttr.WeekArrayType;
+import com.ldf.calendar.component.CalendarViewAdapter;
+import com.ldf.calendar.interf.OnSelectDateListener;
+import com.ldf.calendar.model.CalendarDate;
+import com.ldf.calendar.view.MonthPager;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,6 +49,7 @@ public class CalendarPage extends Activity {
     Button btn_right;
 
     private List<RecordBean> records;
+    GetRecord mGetRecord;
     private RecordBean mRecord;
 
     private TimePickerView pvTime;
@@ -44,21 +59,29 @@ public class CalendarPage extends Activity {
     private int month;
     private long exitTime = 0;
 
+    //calendar 属性
+    TextView tvYear;
+    TextView tvMonth;
+    CoordinatorLayout content;
+    MonthPager monthPager;
+
+    private ArrayList<com.ldf.calendar.view.Calendar> currentCalendars = new ArrayList<>();
+    private CalendarViewAdapter calendarAdapter;
+    private OnSelectDateListener onSelectDateListener;
+    private CalendarDate currentDate;
+    private boolean initiated = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calendar);
+        mGetRecord = new GetRecord(this);
+        monthPager = findViewById(R.id.calendar_view);
+        //此处强行setViewHeight，毕竟你知道你的日历牌的高度
+        monthPager.setViewHeight(Utils.dpi2px(this, 300));
         readLog();
         initView();
         initTimePicker();
-    }
-
-    public void onClickRemind(View v) {
-        if (pvTime != null) {
-            // pvTime.setDate(Calendar.getInstance());
-            /* pvTime.show(); //show timePicker*/
-            pvTime.show(v);//弹出时间选择器，传递参数过去，回调的时候则可以绑定此view
-        }
     }
 
     private void initView() {
@@ -66,7 +89,156 @@ public class CalendarPage extends Activity {
         btn_right = findViewById(R.id.right);
         Calendar calendar = Calendar.getInstance();
         month = calendar.get(Calendar.MONTH) + 1;
-        // TODO: 这里写日历的东西
+        initListener();
+        CustomDayView customDayView = new CustomDayView(this, R.layout.custom_day);
+        calendarAdapter = new CalendarViewAdapter(
+                this,
+                onSelectDateListener,
+                CalendarAttr.CalendarType.MONTH,
+                WeekArrayType.Monday,
+                customDayView);
+        initMarkData();
+        initMonthPager();
+
+        content = findViewById(R.id.content);
+        tvYear = findViewById(R.id.show_year_view);
+        tvMonth = findViewById(R.id.show_month_view);
+        initCurrentDate();
+        initCalendarView();
+        initToolbarClickListener();
+    }
+
+    /**
+     * 初始化currentDate
+     */
+    private void initCurrentDate() {
+        currentDate = new CalendarDate();
+        tvYear.setText(String.format(getResources().getString(R.string.year), currentDate.getYear()));
+        tvMonth.setText(String.format(getResources().getString(R.string.month), currentDate.getMonth()));
+    }
+
+    /**
+     * 初始化CustomDayView，并作为CalendarViewAdapter的参数传入
+     */
+    private void initCalendarView() {
+        initListener();
+        CustomDayView customDayView = new CustomDayView(this, R.layout.custom_day);
+        calendarAdapter = new CalendarViewAdapter(
+                this,
+                onSelectDateListener,
+                CalendarAttr.CalendarType.MONTH,
+                CalendarAttr.WeekArrayType.Monday,
+                customDayView);
+        calendarAdapter.setOnCalendarTypeChangedListener(new CalendarViewAdapter.OnCalendarTypeChanged() {
+            @Override
+            public void onCalendarTypeChanged(CalendarAttr.CalendarType type) {
+            }
+        });
+        initMarkData();
+        initMonthPager();
+    }
+
+
+    /**
+     * 初始化monthPager，MonthPager继承自ViewPager
+     */
+    private void initMonthPager() {
+        monthPager.setAdapter(calendarAdapter);
+        monthPager.setCurrentItem(MonthPager.CURRENT_DAY_INDEX);
+        monthPager.setPageTransformer(false, new ViewPager.PageTransformer() {
+            @Override
+            public void transformPage(@NonNull View page, float position) {
+                position = (float) Math.sqrt(1 - Math.abs(position));
+                page.setAlpha(position);
+            }
+        });
+        monthPager.addOnPageChangeListener(new MonthPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                currentCalendars = calendarAdapter.getPagers();
+                if (currentCalendars.get(position % currentCalendars.size()) != null) {
+                    CalendarDate date = currentCalendars.get(position % currentCalendars.size()).getSeedDate();
+                    currentDate = date;
+                    tvYear.setText(String.format(getResources().getString(R.string.year), date.getYear()));
+                    tvMonth.setText(String.format(getResources().getString(R.string.month), date.getMonth()));
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+    }
+
+    /**
+     * 初始化对应功能的listener
+     */
+    private void initToolbarClickListener() {
+        btn_left.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                monthPager.setCurrentItem(monthPager.getCurrentPosition() - 1);
+            }
+        });
+        btn_right.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                monthPager.setCurrentItem(monthPager.getCurrentPosition() + 1);
+            }
+        });
+    }
+
+    //使用此方法回调日历点击事件
+    private void initListener() {
+        onSelectDateListener = new OnSelectDateListener() {
+            @Override
+            public void onSelectDate(CalendarDate date) {
+                refreshClickDate(date);
+                Intent i = new Intent();
+                i.setClass(CalendarPage.this, Record.class);
+                i.putExtra("date", date.month + "-" + date.day); // yourDate的格式和readLog()一样
+                CalendarPage.this.startActivity(i);
+            }
+
+            @Override
+            public void onSelectOtherMonth(int offset) {
+                //偏移量 -1表示上一个月 ， 1表示下一个月
+                monthPager.selectOtherMonth(offset);
+            }
+        };
+    }
+
+    private void refreshClickDate(CalendarDate date) {
+        currentDate = date;
+        tvYear.setText(String.format(getResources().getString(R.string.year), date.getYear()));
+        tvMonth.setText(String.format(getResources().getString(R.string.month), date.getMonth()));
+    }
+
+    //使用此方法初始化日历标记数据
+    private void initMarkData() {
+        HashMap<String, String> markData = new HashMap<>();
+        //1表示红点，0表示灰点，只在日历上标注出灰点表示没有打卡的日期
+        int day;
+        if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
+            day = 31;
+        } else if (month == 2) {
+            day = 28;
+        } else {
+            day = 30;
+        }
+        String s;
+        boolean[] recordData = mGetRecord.queryByMonth(Integer.toString(month), day);
+        for (int i = 1; i <= day; i++) {
+            if (!recordData[i]) {
+                s = "2019-" + month + "-" + i;
+                markData.put(s, "10");
+            }
+        }
+        calendarAdapter.setMarkData(markData);
     }
 
     private void initTimePicker() {//Dialog 模式下，在底部弹出
@@ -74,7 +246,7 @@ public class CalendarPage extends Activity {
             @Override
             public void onTimeSelect(Date date, View v) {//选中事件回调
                 Toast.makeText(CalendarPage.this, "设置成功！", Toast.LENGTH_SHORT).show();
-                new GetRecord(CalendarPage.this).updatePunch(getTime(date));
+                mGetRecord.updatePunch(getTime(date));
             }
         })
                 .setType(new boolean[]{false, false, false, true, true, false})// 默认全部显示
@@ -114,14 +286,13 @@ public class CalendarPage extends Activity {
         }
     }
 
-    // TODO: 增加一些与日历相关的方法，比如点击事件
-    // 点击
-    /*
-                Intent i = new Intent();
-                i.setClass(CalendarPage.this, RecordDetails.class);
-                i.putExtra("date", yourDate); // yourDate的格式和readLog()一样
-                RecordDetails.this.startActivity(i);
-     */
+    public void onClickRemind(View v) {
+        if (pvTime != null) {
+            // pvTime.setDate(Calendar.getInstance());
+            /* pvTime.show(); //show timePicker*/
+            pvTime.show(v);//弹出时间选择器，传递参数过去，回调的时候则可以绑定此view
+        }
+    }
 
     public void ClickSleep(View v) {
         Intent i = new Intent();
@@ -132,7 +303,6 @@ public class CalendarPage extends Activity {
 
     //向左切换睡眠记录
     public void ClickLeft(View v) {
-        // TODO: 向左切换日历
         if (month == 0) {
             left_invisible = true;
             btn_left.setVisibility(View.INVISIBLE);
@@ -145,7 +315,6 @@ public class CalendarPage extends Activity {
 
     //向右切换睡眠记录
     public void ClickRight(View v) {
-        // TODO: 向右切换日历
         if (month >= 12) {
             right_invisible = true;
             btn_right.setVisibility(View.INVISIBLE);
@@ -153,6 +322,17 @@ public class CalendarPage extends Activity {
         if (left_invisible) {
             left_invisible = false;
             btn_left.setVisibility(View.VISIBLE);
+        }
+    }
+
+    //重写onWindowFocusChanged方法，使用此方法得知calendar和day的尺寸
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && !initiated) {
+            CalendarDate today = new CalendarDate();
+            calendarAdapter.notifyDataChanged(today);
+            initiated = true;
         }
     }
 

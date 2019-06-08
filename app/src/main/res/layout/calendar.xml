@@ -8,6 +8,29 @@
     tools:context="com.howard.sleephelper.CalendarPage">
 
 
+    <TextView
+        android:id="@+id/show_month_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:textColor="@android:color/white"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toStartOf="@+id/right"
+        app:layout_constraintHorizontal_bias="0.68"
+        app:layout_constraintStart_toEndOf="@+id/left"
+        app:layout_constraintTop_toBottomOf="@+id/layout_titlebar" />
+
+    <TextView
+        android:id="@+id/show_year_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="@android:color/white"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toStartOf="@+id/show_month_view"
+        app:layout_constraintTop_toBottomOf="@+id/layout_titlebar" />
+
     <RelativeLayout
         android:id="@+id/layout_titlebar"
         android:layout_width="match_parent"
@@ -65,7 +88,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="80dp"
         android:background="@drawable/arrows_left"
         android:onClick="ClickLeft"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,7 +100,7 @@
         android:layout_height="34dp"
         android:layout_alignTop="@+id/left"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="80dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/arrows_right"
         android:onClick="ClickRight"
@@ -88,8 +111,8 @@
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        app:layout_constraintBottom_toBottomOf="parent">
-
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="0dp">
 
 
         <Button
@@ -99,8 +122,8 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:background="#191970"
-            android:drawablePadding="2dp"
             android:drawableTop="@drawable/sleep_0"
+            android:drawablePadding="2dp"
             android:ellipsize="end"
             android:gravity="center"
             android:onClick="ClickSleep"
@@ -119,11 +142,11 @@
             android:id="@+id/text_record_1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
             android:background="#191970"
-            android:drawablePadding="2dp"
             android:drawableTop="@drawable/record_1"
+            android:drawablePadding="2dp"
             android:ellipsize="end"
             android:gravity="center"
             android:paddingTop="5dp"
@@ -137,5 +160,37 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/text_home_1" />
     </android.support.constraint.ConstraintLayout>
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/content"
+        android:layout_width="wrap_content"
+        android:layout_height="300dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_weight="1"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toStartOf="@+id/right"
+        app:layout_constraintStart_toEndOf="@+id/left"
+        app:layout_constraintTop_toBottomOf="@+id/layout_titlebar"
+        app:layout_constraintVertical_bias="0.419">
+
+        <com.ldf.calendar.view.MonthPager
+            android:id="@+id/calendar_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="#c2c2c2"
+            app:layout_behavior="com.ldf.calendar.behavior.RecyclerViewBehavior" />
+
+    </android.support.design.widget.CoordinatorLayout>
+
 
 </android.support.constraint.ConstraintLayout>

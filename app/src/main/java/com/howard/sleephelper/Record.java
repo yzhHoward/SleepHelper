@@ -5,9 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
-import android.view.View;
-import android.widget.Toast;
 
 import com.howard.sleephelper.recyclerView.Trace;
 import com.howard.sleephelper.recyclerView.TraceListAdapter;
@@ -22,8 +19,6 @@ import java.util.List;
  */
 public class Record extends Activity {
 
-    private long exitTime = 0;
-
     private RecyclerView rvTrace;
     private List<Trace> traceList = new ArrayList<>();
     private TraceListAdapter adapter;
@@ -35,51 +30,30 @@ public class Record extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.records);
         rvTrace = findViewById(R.id.timelList);
-        initData();
         date = this.getIntent().getStringExtra("date");
+        initData();
     }
 
     //睡眠记录数据初始化
     private void initData() {
         GetRecord mGetRecord = new GetRecord(this);
-        List<RecordBean> records = mGetRecord.queryAllList();
-        //List<RecordBean> records = mGetRecord.queryByDate(date);
+        //List<RecordBean> records = mGetRecord.queryAllList();
+        List<RecordBean> records = mGetRecord.queryByDate(date);
         if (records.size() == 1) {
             Intent i = new Intent(Record.this, RecordDetails.class);
-            i.putExtra("position", 0);
             i.putExtra("date", date);
+            i.putExtra("position", 0);
             Record.this.startActivity(i);
             Record.this.finish();
-        }
-        for (RecordBean e : records) {
-            traceList.add(new Trace(e.getDate(), e.getStartTime() + "-" + e.getEndTime()
-                    + "  " + e.getTotalTime() / 60 + "时" + e.getTotalTime() % 60 + "分"));
-        }
-        adapter = new TraceListAdapter(this, traceList);
-        rvTrace.setLayoutManager(new LinearLayoutManager(this));
-        rvTrace.setAdapter(adapter);
-    }
-
-    public void ClickSleep(View v) {
-        Intent i = new Intent();
-        i.setClass(Record.this, MainActivity.class);
-        Record.this.startActivity(i);
-        Record.this.finish();
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
-            if (System.currentTimeMillis() - exitTime > 2000) {
-                Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
-                exitTime = System.currentTimeMillis();
-            } else {
-                finish();
-                System.exit(0);
+        } else {
+            for (RecordBean e : records) {
+                traceList.add(new Trace(e.getDate(), e.getStartTime() + "-" + e.getEndTime()
+                        + "  " + e.getTotalTime() / 60 + "时" + e.getTotalTime() % 60 + "分"));
             }
-            return true;
+            adapter = new TraceListAdapter(this, traceList, date);
+            rvTrace.setLayoutManager(new LinearLayoutManager(this));
+            rvTrace.setAdapter(adapter);
         }
-        return super.onKeyDown(keyCode, event);
     }
 
     @Override
