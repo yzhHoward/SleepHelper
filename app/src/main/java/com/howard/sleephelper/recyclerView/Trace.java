@@ -1,5 +1,8 @@
 package com.howard.sleephelper.recyclerView;
 
+/**
+ * 用来绘制记录的类
+ */
 public class Trace {
 
     private String Date;

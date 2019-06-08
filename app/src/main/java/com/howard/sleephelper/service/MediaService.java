@@ -38,6 +38,11 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         return START_STICKY;
     }
 
+    /**
+     * 获取音乐列表
+     *
+     * @return 音乐列表的String[]
+     */
     public String[] getMusic() {
         AssetManager assetManager = getAssets();
         String[] tmp_files = null;
@@ -57,6 +62,9 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         return files_array.toArray(new String[0]);
     }
 
+    /**
+     * 换首曲子
+     */
     private void changeMusic() {
         if (currentPosition < 0) {
             currentPosition = musicPath.length - 1;
@@ -110,6 +118,9 @@ public class MediaService extends Service implements MediaPlayer.OnPreparedListe
         }
     }
 
+    /**
+     * 用来和Activity通信的Binder
+     */
     public class MyBinder extends Binder {
 
         // 播放音乐

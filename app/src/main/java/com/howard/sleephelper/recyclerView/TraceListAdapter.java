@@ -53,6 +53,12 @@ public class TraceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return new ViewHolder(inflater.inflate(R.layout.list_cell, parent, false));
     }
 
+    /**
+     * 绘制记录
+     *
+     * @param holder   记录的holder
+     * @param position 记录的位置
+     */
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         ViewHolder itemHolder = (ViewHolder) holder;

@@ -8,7 +8,7 @@ import org.greenrobot.greendao.annotation.Id;
 public class RecordBean {
     @Id(autoincrement = true)
     private Long id;
-    private String date;//格式：yyyy:mm:dd
+    private String date;//格式：mm:dd
     private String startTime;//格式：hh:mm
     private String endTime;
     private int totalTime;

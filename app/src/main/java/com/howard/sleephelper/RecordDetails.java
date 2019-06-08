@@ -135,6 +135,9 @@ public class RecordDetails extends Activity {
         }
     }
 
+    /**
+     * 获取睡眠记录
+     */
     private void readLog() {
         GetRecord mGetRecord = new GetRecord(this);
         records = mGetRecord.queryByDate(date);

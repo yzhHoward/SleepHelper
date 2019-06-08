@@ -230,7 +230,7 @@ public class Sleep extends Activity {
         }
     }
 
-    //下面是乱七八糟的保活策略，只能在sdk=26时有效，目前28没有效果可能还有bug
+    //下面各种的保活策略，部分在sdk=25时有效，于是暂时去掉了
     private void startPlayMusicService() {
         Intent intent = new Intent(Sleep.this, PlayerMusicService.class);
         startService(intent);

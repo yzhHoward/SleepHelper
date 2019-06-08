@@ -8,6 +8,9 @@ import android.support.annotation.Nullable;
 
 import com.howard.sleephelper.R;
 
+/**
+ * 后台播放音乐保活
+ */
 public class PlayerMusicService extends Service {
     private MediaPlayer mMediaPlayer;
 

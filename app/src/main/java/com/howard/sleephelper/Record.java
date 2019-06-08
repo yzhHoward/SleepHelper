@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.howard.sleephelper.recyclerView.Trace;
 import com.howard.sleephelper.recyclerView.TraceListAdapter;
@@ -54,6 +55,11 @@ public class Record extends Activity {
             rvTrace.setLayoutManager(new LinearLayoutManager(this));
             rvTrace.setAdapter(adapter);
         }
+    }
+
+    //左上的返回
+    public void ClickBack(View v) {
+        Record.this.finish();
     }
 
     @Override

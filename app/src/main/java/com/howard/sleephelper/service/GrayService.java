@@ -14,6 +14,9 @@ public class GrayService extends Service {
         super.onCreate();
     }
 
+    /**
+     * 利用曾经的漏洞保活
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         startForeground(GRAY_SERVICE_ID, new Notification());

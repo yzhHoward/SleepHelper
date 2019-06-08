@@ -125,10 +125,23 @@ public class GetRecord {
         return recordBeanDao.queryBuilder().orderDesc(RecordBeanDao.Properties.Id).list();
     }
 
+    /**
+     * 按日期查找
+     *
+     * @param date 日期
+     * @return 记录的对象
+     */
     public List queryByDate(String date) {
         return recordBeanDao.queryBuilder().where(RecordBeanDao.Properties.Date.eq(date)).orderAsc(RecordBeanDao.Properties.Id).list();
     }
 
+    /**
+     * 按月查找
+     *
+     * @param month 月份
+     * @param days  对应的月有多少天
+     * @return 每天是否有记录
+     */
     public boolean[] queryByMonth(String month, int days) {
         boolean[] result = new boolean[days + 1];
         String date;
@@ -139,10 +152,16 @@ public class GetRecord {
         return result;
     }
 
+    /**
+     * 通过id获取记录
+     */
     public RecordBean getRecordById(long id) {
         return recordBeanDao.queryBuilder().where(RecordBeanDao.Properties.Id.eq(id)).build().unique();
     }
 
+    /**
+     * 获得最新的记录
+     */
     public RecordBean getLatestRecord() {
         List<RecordBean> records = recordBeanDao.queryBuilder().orderDesc(RecordBeanDao.Properties.Id).list();
         if (!records.isEmpty())

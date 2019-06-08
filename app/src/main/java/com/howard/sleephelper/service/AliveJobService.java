@@ -19,6 +19,9 @@ public class AliveJobService extends JobService {
 
     private static final int MESSAGE_ID_TASK = 0x01;
 
+    /**
+     * 用来保活
+     */
     private Handler mHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
