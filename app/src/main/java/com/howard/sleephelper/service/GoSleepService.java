@@ -37,6 +37,9 @@ public class GoSleepService extends Service {
     };
     Timer timer = new Timer();
 
+    /**
+     * 初始化，顺便获取当天是否已经睡觉记录，如已睡觉则不再提醒。
+     */
     @Override
     public void onCreate() {
         super.onCreate();
@@ -52,7 +55,7 @@ public class GoSleepService extends Service {
         mManager.cancel(3);
         timer.schedule(timerTask, 0, 60000);
     }
-    //此为开机自弃成功与否测试
+    //此为开机自自启成功与否测试
     Notification.Builder createMyNotification() {
         Notification.Builder builder = new Notification.Builder(this);
         builder

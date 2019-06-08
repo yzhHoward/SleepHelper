@@ -64,6 +64,11 @@ public class SensorService extends AbsWorkService {
         return new Messenger(new Handler()).getBinder();
     }
 
+    /**
+     *当服务被杀之后调用的方法
+     *
+     * @param rootIntent （继承的，么的用）
+     */
     @Override
     public void onServiceKilled(Intent rootIntent) {
         if (sensor != null) {
@@ -72,7 +77,12 @@ public class SensorService extends AbsWorkService {
         }
     }
 
-
+    /**
+     * 当这个servic正常停止后的方法（我们用的部分比较简单，暂时不需要继承方法提供的变量）
+     * @param intent
+     * @param flags
+     * @param startId
+     */
     @Override
     public void stopWork(Intent intent, int flags, int startId) {
 
@@ -103,6 +113,13 @@ public class SensorService extends AbsWorkService {
 
     }
 
+    /**
+     * 我们尝试使用电池锁需要在初始化时仅一次调用电池锁，所以重写了这个start方法
+     * 但是现在暂时不用了。。。
+     * @param intent
+     * @param flags
+     * @param startId
+     */
     void startService(Intent intent, int flags, int startId) {
         //若还没有取消订阅，说明任务仍在运行，为防止重复启动，直接 return
         Boolean workRunning = isWorkRunning(intent, flags, startId);
@@ -117,6 +134,12 @@ public class SensorService extends AbsWorkService {
         startWork(intent, flags, startId);
     }
 
+    /**
+     * 当服务被杀之后重新开始的初始化部分，会被调用多次，进行了传感器的初始化以及注册
+     * @param intent
+     * @param flags
+     * @param startId
+     */
     @Override
     public void startWork(Intent intent, int flags, int startId) {
         Calendar calendar = Calendar.getInstance();
@@ -153,6 +176,9 @@ public class SensorService extends AbsWorkService {
                 });
     }
 
+    /**
+     * 以后可能会用到的电池锁放开的方法
+     */
     private void releaseWakeLock() {
         if (null != m_wake && m_wake.isHeld()) {
             Log.d(TAG, "call releaseWakeLock");

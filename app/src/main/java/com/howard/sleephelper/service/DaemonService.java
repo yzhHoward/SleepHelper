@@ -22,6 +22,9 @@ public class DaemonService extends Service {
         return null;
     }
 
+    /**
+     *  初始化获取channel manager与notification构造器
+     */
     @Override
     public void onCreate() {
         super.onCreate();
@@ -30,7 +33,8 @@ public class DaemonService extends Service {
         manager.notify(NOTICE_ID, sleep.build());
     }
 
-    /**创建通知及通知频道
+    /**
+     * 创建通知及通知频道
      *
      * @return 通知构造器
      */
