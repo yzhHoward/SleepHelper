@@ -24,6 +24,7 @@ import com.bigkoo.pickerview.view.TimePickerView;
 import com.howard.sleephelper.calendarInfo.CustomDayView;
 import com.howard.sleephelper.database.GetRecord;
 import com.howard.sleephelper.database.RecordBean;
+import com.howard.sleephelper.service.GoSleepService;
 import com.ldf.calendar.Utils;
 import com.ldf.calendar.component.CalendarAttr;
 import com.ldf.calendar.component.CalendarAttr.WeekArrayType;
@@ -75,6 +76,7 @@ public class CalendarPage extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calendar);
         mGetRecord = getRecord();
@@ -249,6 +251,7 @@ public class CalendarPage extends Activity {
             public void onTimeSelect(Date date, View v) {//选中事件回调
                 Toast.makeText(CalendarPage.this, "设置成功！", Toast.LENGTH_SHORT).show();
                 mGetRecord.updatePunch(getTime(date));
+                startGosleepService();
             }
         })
                 .setType(new boolean[]{false, false, false, true, true, false})// 默认全部显示
@@ -336,6 +339,11 @@ public class CalendarPage extends Activity {
             calendarAdapter.notifyDataChanged(today);
             initiated = true;
         }
+    }
+
+    private void startGosleepService() {
+        Intent intent = new Intent(CalendarPage.this, GoSleepService.class);
+        startService(intent);
     }
 
     @Override

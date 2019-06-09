@@ -101,7 +101,7 @@ public class Sleep extends Activity {
         runningTime = 0;
         startRunTimer();
         //startPlayMusicService();
-        stopGosleepService();
+        //stopGosleepService();
         startDaemonService();
 
         WatchProcessPrefHelper.setIsStartSDaemon(this, true);
