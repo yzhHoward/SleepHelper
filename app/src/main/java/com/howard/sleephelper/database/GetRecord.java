@@ -142,8 +142,8 @@ public class GetRecord {
         boolean[] result = new boolean[days + 1];
         String date;
         for (int i = 1; i <= days; ++i) {
-            date = month + "-" + days;
-            result[i] = recordBeanDao.queryBuilder().where(RecordBeanDao.Properties.Date.eq(date)) == null;
+            date = month + "-" + i;
+            result[i] = recordBeanDao.queryBuilder().where(RecordBeanDao.Properties.Date.eq(date)).build().list().size() > 0;
         }
         return result;
     }

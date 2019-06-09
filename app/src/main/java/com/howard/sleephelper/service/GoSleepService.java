@@ -46,17 +46,18 @@ public class GoSleepService extends Service {
     public void onCreate() {
         super.onCreate();
         GetRecord myGet = getRecord();
-        String remind=myGet.getRemind();
+        String remind = myGet.getRemind();
         String[] res = remind.split(":");
-        hour=Integer.parseInt(res[0]);
-        min=Integer.parseInt(res[1]);
+        hour = Integer.parseInt(res[0]);
+        min = Integer.parseInt(res[1]);
         mManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         sleep = createNotification();
         ifSleep = ifSleepToday();
         startForeground(3, createMyNotification().build());
         mManager.cancel(3);
-        timer.schedule(timerTask, 0, 60000);
+        timer.schedule(timerTask, 0, 3000);
     }
+
     //此为开机自自启成功与否测试
     Notification.Builder createMyNotification() {
         Notification.Builder builder = new Notification.Builder(this);
@@ -76,7 +77,8 @@ public class GoSleepService extends Service {
         return builder;
     }
 
-    /**创建通知及通知频道
+    /**
+     * 创建通知及通知频道
      *
      * @return 通知构造器
      */
@@ -98,11 +100,12 @@ public class GoSleepService extends Service {
         }
         return builder;
     }
+
     /**
      * 今日是否睡觉
      *
      * @return 已睡觉，未睡觉
-    **/
+     **/
     public boolean ifSleepToday() {
         Calendar calendar = Calendar.getInstance();
         return (getRecord().queryByDate(((calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH))).size() > 0);

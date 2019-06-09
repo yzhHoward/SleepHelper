@@ -23,7 +23,7 @@ public class DaemonService extends Service {
     }
 
     /**
-     *  初始化获取channel manager与notification构造器
+     * 初始化获取channel manager与notification构造器
      */
     @Override
     public void onCreate() {

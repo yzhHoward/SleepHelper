@@ -40,7 +40,7 @@ public class SplashActivity extends Activity {
             }
         }, DELAY_TIME);
 
-        }
+    }
 
     //检测是否有存储权限，没有申请提权
     public void myPermission() {

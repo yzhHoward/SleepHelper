@@ -21,8 +21,8 @@ public class RecordBean {
 
     @Generated(hash = 605421460)
     public RecordBean(Long id, String date, String startTime, String endTime,
-            int totalTime, boolean drawChart, int deepTime, int swallowTime,
-            int awakeTime, String sleepDetail, boolean valid) {
+                      int totalTime, boolean drawChart, int deepTime, int swallowTime,
+                      int awakeTime, String sleepDetail, boolean valid) {
         this.id = id;
         this.date = date;
         this.startTime = startTime;
@@ -39,69 +39,91 @@ public class RecordBean {
     @Generated(hash = 96196931)
     public RecordBean() {
     }
+
     public Long getId() {
         return this.id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
+
     public String getDate() {
         return this.date;
     }
+
     public void setDate(String date) {
         this.date = date;
     }
+
     public String getStartTime() {
         return this.startTime;
     }
+
     public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
+
     public String getEndTime() {
         return this.endTime;
     }
+
     public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
+
     public int getTotalTime() {
         return this.totalTime;
     }
+
     public void setTotalTime(int totalTime) {
         this.totalTime = totalTime;
     }
+
     public boolean getDrawChart() {
         return this.drawChart;
     }
+
     public void setDrawChart(boolean drawChart) {
         this.drawChart = drawChart;
     }
+
     public int getDeepTime() {
         return this.deepTime;
     }
+
     public void setDeepTime(int deepTime) {
         this.deepTime = deepTime;
     }
+
     public int getSwallowTime() {
         return this.swallowTime;
     }
+
     public void setSwallowTime(int swallowTime) {
         this.swallowTime = swallowTime;
     }
+
     public int getAwakeTime() {
         return this.awakeTime;
     }
+
     public void setAwakeTime(int awakeTime) {
         this.awakeTime = awakeTime;
     }
+
     public String getSleepDetail() {
         return this.sleepDetail;
     }
+
     public void setSleepDetail(String sleepDetail) {
         this.sleepDetail = sleepDetail;
     }
+
     public boolean getValid() {
         return this.valid;
     }
+
     public void setValid(boolean valid) {
         this.valid = valid;
     }

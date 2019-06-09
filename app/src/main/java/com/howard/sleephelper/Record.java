@@ -26,7 +26,7 @@ public class Record extends Activity {
     private List<Trace> traceList = new ArrayList<>();
     private TraceListAdapter adapter;
 
-    private String date="";
+    private String date = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

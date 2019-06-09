@@ -7,18 +7,18 @@ import java.util.List;
 
 public class ApkHelper {
 
-    public static String getProcessName(Context context){
+    public static String getProcessName(Context context) {
         int pid = android.os.Process.myPid();
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         if (am == null) {
             return null;
         }
         List<ActivityManager.RunningAppProcessInfo> processes = am.getRunningAppProcesses();
-        if (processes == null){
+        if (processes == null) {
             return null;
         }
-        for (ActivityManager.RunningAppProcessInfo info : processes){
-            if (info.pid == pid){
+        for (ActivityManager.RunningAppProcessInfo info : processes) {
+            if (info.pid == pid) {
                 return info.processName;
             }
         }
