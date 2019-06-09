@@ -11,10 +11,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.howard.sleephelper.sleepRecord.GetRecord;
-import com.howard.sleephelper.sleepRecord.RecordBean;
+import com.howard.sleephelper.database.GetRecord;
+import com.howard.sleephelper.database.RecordBean;
 
 import java.util.Random;
+
+import static com.howard.sleephelper.database.GetRecord.getRecord;
 
 /**
  * 一开始的主界面
@@ -84,7 +86,7 @@ public class MainActivity extends Activity {
     //读睡眠记录，判断是否异常退出
     private void readLog() {
         RecordBean mRecord;
-        GetRecord mGetRecord = new GetRecord(this);
+        GetRecord mGetRecord = getRecord();
         mRecord = mGetRecord.getLatestRecord();
         if (mRecord != null) {
             if (!mRecord.getValid()) {

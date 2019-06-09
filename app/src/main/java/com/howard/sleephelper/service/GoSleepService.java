@@ -10,11 +10,13 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
 import com.howard.sleephelper.R;
-import com.howard.sleephelper.sleepRecord.GetRecord;
+import com.howard.sleephelper.database.GetRecord;
 
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static com.howard.sleephelper.database.GetRecord.getRecord;
 
 public class GoSleepService extends Service {
     boolean notification_on = false;
@@ -43,7 +45,7 @@ public class GoSleepService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        GetRecord myGet=new GetRecord(this);
+        GetRecord myGet = getRecord();
         String remind=myGet.getRemind();
         String[] res = remind.split(":");
         hour=Integer.parseInt(res[0]);
@@ -103,7 +105,7 @@ public class GoSleepService extends Service {
     **/
     public boolean ifSleepToday() {
         Calendar calendar = Calendar.getInstance();
-        return ((new GetRecord(this)).queryByDate(((calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH))).size() > 0);
+        return (getRecord().queryByDate(((calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH))).size() > 0);
 
     }
 

@@ -8,13 +8,15 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.howard.sleephelper.database.GetRecord;
+import com.howard.sleephelper.database.RecordBean;
 import com.howard.sleephelper.drawChart.DrawLineChart;
 import com.howard.sleephelper.drawChart.DrawPieChart;
-import com.howard.sleephelper.sleepRecord.GetRecord;
-import com.howard.sleephelper.sleepRecord.RecordBean;
 
 import java.util.List;
 import java.util.Locale;
+
+import static com.howard.sleephelper.database.GetRecord.getRecord;
 
 /**
  * 详细的记录页面
@@ -139,7 +141,7 @@ public class RecordDetails extends Activity {
      * 获取睡眠记录
      */
     private void readLog() {
-        GetRecord mGetRecord = new GetRecord(this);
+        GetRecord mGetRecord = getRecord();
         records = mGetRecord.queryByDate(date);
         mRecord = records.get(idx);
         max = records.size() - 1;

@@ -14,7 +14,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.howard.sleephelper.R;
-import com.howard.sleephelper.sleepRecord.RecordBean;
+import com.howard.sleephelper.database.RecordBean;
 
 import java.util.ArrayList;
 import java.util.List;

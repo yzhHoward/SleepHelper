@@ -11,7 +11,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.howard.sleephelper.R;
-import com.howard.sleephelper.sleepRecord.RecordBean;
+import com.howard.sleephelper.database.RecordBean;
 
 import java.util.ArrayList;
 

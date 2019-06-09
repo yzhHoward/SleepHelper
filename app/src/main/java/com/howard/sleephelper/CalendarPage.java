@@ -22,8 +22,8 @@ import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.howard.sleephelper.calendarInfo.CustomDayView;
-import com.howard.sleephelper.sleepRecord.GetRecord;
-import com.howard.sleephelper.sleepRecord.RecordBean;
+import com.howard.sleephelper.database.GetRecord;
+import com.howard.sleephelper.database.RecordBean;
 import com.ldf.calendar.Utils;
 import com.ldf.calendar.component.CalendarAttr;
 import com.ldf.calendar.component.CalendarAttr.WeekArrayType;
@@ -39,6 +39,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
+import static com.howard.sleephelper.database.GetRecord.getRecord;
 
 /**
  * 睡眠记录页面
@@ -75,7 +77,7 @@ public class CalendarPage extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calendar);
-        mGetRecord = new GetRecord(this);
+        mGetRecord = getRecord();
         monthPager = findViewById(R.id.calendar_view);
         //此处强行setViewHeight，毕竟你知道你的日历牌的高度
         monthPager.setViewHeight(Utils.dpi2px(this, 300));
@@ -352,7 +354,7 @@ public class CalendarPage extends Activity {
     }
 
     private void readLog() {
-        GetRecord mGetRecord = new GetRecord(this);
+        GetRecord mGetRecord = getRecord();
         // TODO: 这里读日志，可以根据日期写一个循环，获取每天的记录
         records = mGetRecord.queryByDate("Your Date"); // 格式"月:日"，没有多余的0
         if (records.isEmpty()) {

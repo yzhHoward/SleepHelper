@@ -1,36 +1,32 @@
-package com.howard.sleephelper.sleepRecord;
+package com.howard.sleephelper.database;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import java.io.File;
+import com.howard.sleephelper.App;
+
 import java.util.List;
 import java.util.Locale;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * 处理睡眠记录数据库
  */
 public class GetRecord {
-
     private RecordBeanDao recordBeanDao;
     private RemindBeanDao remindBeanDao;
-    private DaoSession mDaoSession;
+    private static final String TAG = "GreenDao";
+    private static GetRecord getRecord;
 
-    public GetRecord(Context context) {
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper
-                (context, context.getExternalFilesDir(null) + File.separator + "sleepRecord.db");
-        SQLiteDatabase db = helper.getWritableDatabase();
-        DaoMaster daoMaster = new DaoMaster(db);
-        mDaoSession = daoMaster.newSession();
+    private GetRecord() {
+        DaoSession mDaoSession = App.mDaoSession;
         recordBeanDao = mDaoSession.getRecordBeanDao();
         remindBeanDao = mDaoSession.getRemindBeanDao();
     }
 
-    public DaoSession getDaoSession() {
-        return mDaoSession;
+    public static GetRecord getRecord() {
+        if (getRecord == null) {
+            getRecord = new GetRecord();
+        }
+        return getRecord;
     }
 
     /**

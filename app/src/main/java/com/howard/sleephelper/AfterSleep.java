@@ -12,12 +12,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.PieChart;
+import com.howard.sleephelper.database.GetRecord;
+import com.howard.sleephelper.database.RecordBean;
 import com.howard.sleephelper.drawChart.DrawPieChart;
-import com.howard.sleephelper.sleepRecord.GetRecord;
-import com.howard.sleephelper.sleepRecord.RecordBean;
 
 import java.util.Locale;
 import java.util.Random;
+
+import static com.howard.sleephelper.database.GetRecord.getRecord;
 
 /**
  * 结束记录的界面
@@ -59,7 +61,7 @@ public class AfterSleep extends Activity {
         background.setBackground(cur);
         //long recordId = this.getIntent().getLongExtra("recordId", 0);
 
-        GetRecord mGetRecord = new GetRecord(this);
+        GetRecord mGetRecord = getRecord();
         mRecord = mGetRecord.getLatestRecord();
         initView();
     }

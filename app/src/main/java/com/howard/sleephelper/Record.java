@@ -7,13 +7,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.howard.sleephelper.database.GetRecord;
+import com.howard.sleephelper.database.RecordBean;
 import com.howard.sleephelper.recyclerView.Trace;
 import com.howard.sleephelper.recyclerView.TraceListAdapter;
-import com.howard.sleephelper.sleepRecord.GetRecord;
-import com.howard.sleephelper.sleepRecord.RecordBean;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.howard.sleephelper.database.GetRecord.getRecord;
 
 /**
  * 睡眠记录页面
@@ -37,7 +39,7 @@ public class Record extends Activity {
 
     //睡眠记录数据初始化
     private void initData() {
-        GetRecord mGetRecord = new GetRecord(this);
+        GetRecord mGetRecord = getRecord();
         //List<RecordBean> records = mGetRecord.queryAllList();
         List<RecordBean> records = mGetRecord.queryByDate(date);
         if (records.size() == 1) {

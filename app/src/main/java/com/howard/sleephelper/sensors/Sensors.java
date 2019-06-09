@@ -8,12 +8,13 @@ import android.hardware.SensorManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.howard.sleephelper.sleepRecord.GetRecord;
-import com.howard.sleephelper.sleepRecord.RecordBean;
+import com.howard.sleephelper.database.GetRecord;
+import com.howard.sleephelper.database.RecordBean;
 
 import java.util.Calendar;
 
 import static android.content.ContentValues.TAG;
+import static com.howard.sleephelper.database.GetRecord.getRecord;
 
 public class Sensors {
     private int deepTime;
@@ -32,7 +33,7 @@ public class Sensors {
         getSensorManager(context);
         startSensor();
         this.mRecord = mRecord;
-        mGetRecord = new GetRecord(context);
+        mGetRecord = getRecord();
     }
 
     /**

@@ -8,9 +8,9 @@ import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.howard.sleephelper.database.GetRecord;
+import com.howard.sleephelper.database.RecordBean;
 import com.howard.sleephelper.sensors.Sensors;
-import com.howard.sleephelper.sleepRecord.GetRecord;
-import com.howard.sleephelper.sleepRecord.RecordBean;
 import com.shihoo.daemon.AbsWorkService;
 
 import java.util.Calendar;
@@ -23,6 +23,7 @@ import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 
 import static android.content.ContentValues.TAG;
+import static com.howard.sleephelper.database.GetRecord.getRecord;
 
 public class SensorService extends AbsWorkService {
 
@@ -145,7 +146,7 @@ public class SensorService extends AbsWorkService {
         Calendar calendar = Calendar.getInstance();
         startTime = calendar.getTimeInMillis();
         //注意：若启用mJobManager则需要重新调整reStart内容
-        mGetRecord = new GetRecord(this);
+        mGetRecord = getRecord();
         mRecord = mGetRecord.getLatestRecord();
         if (mRecord != null) {
             restart = !mRecord.getValid();
