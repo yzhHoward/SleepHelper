@@ -30,7 +30,7 @@ public class GoSleepService extends Service {
         public void run() {
             if (!ifSleep && !notification_on) {
                 Calendar now = Calendar.getInstance();
-                if ((now.get(Calendar.HOUR_OF_DAY)) > hour&&(now.get(Calendar.MINUTE))>min) {
+                if ((now.get(Calendar.HOUR_OF_DAY)) > hour && (now.get(Calendar.MINUTE)) > min) {
                     mManager.notify(2, sleep.build());
                     notification_on = true;
                 }
@@ -109,14 +109,11 @@ public class GoSleepService extends Service {
      **/
     public boolean ifSleepToday() {
         Calendar calendar = Calendar.getInstance();
-        return (getRecord().queryByDate(((calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH))).size() > 0);
-
+        return !getRecord().queryByDate(((calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH))).isEmpty();
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-
-
         return null;
     }
 

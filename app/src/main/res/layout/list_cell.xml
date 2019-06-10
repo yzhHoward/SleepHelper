@@ -38,9 +38,9 @@
         android:id="@+id/rlCenter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="6dp"
+        android:paddingTop="6dp"
         android:paddingRight="10dp"
-        android:paddingTop="6dp">
+        android:paddingBottom="6dp">
 
         <TextView
             android:id="@+id/Date"

@@ -24,7 +24,6 @@ public class Record extends Activity {
 
     private RecyclerView rvTrace;
     private List<Trace> traceList = new ArrayList<>();
-    private TraceListAdapter adapter;
 
     private String date = "";
 
@@ -53,7 +52,7 @@ public class Record extends Activity {
                 traceList.add(new Trace(e.getDate(), e.getStartTime() + "-" + e.getEndTime()
                         + "  " + e.getTotalTime() / 60 + "时" + e.getTotalTime() % 60 + "分"));
             }
-            adapter = new TraceListAdapter(this, traceList, date);
+            TraceListAdapter adapter = new TraceListAdapter(this, traceList, date);
             rvTrace.setLayoutManager(new LinearLayoutManager(this));
             rvTrace.setAdapter(adapter);
         }

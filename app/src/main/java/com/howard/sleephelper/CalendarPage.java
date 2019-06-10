@@ -33,7 +33,6 @@ import com.ldf.calendar.view.MonthPager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -49,14 +48,10 @@ public class CalendarPage extends Activity {
     Button btn_right;
 
     GetRecord mGetRecord;
-    boolean[] recordData;
-    int dayNum;
+    boolean[][] recordData;
 
     private TimePickerView pvTime;
 
-    private boolean left_invisible;
-    private boolean right_invisible;
-    private int month;
     private long exitTime = 0;
 
     //calendar 属性
@@ -77,6 +72,7 @@ public class CalendarPage extends Activity {
         setContentView(R.layout.calendar);
         mGetRecord = getRecord();
         monthPager = findViewById(R.id.calendar_view);
+        recordData = new boolean[13][];
         //此处强行setViewHeight，毕竟你知道你的日历牌的高度
         //monthPager.setViewHeight(Utils.dpi2px(this, 300));
         initView();
@@ -84,16 +80,19 @@ public class CalendarPage extends Activity {
     }
 
     private void initView() {
-        Calendar calendar = Calendar.getInstance();
-        month = calendar.get(Calendar.MONTH) + 1;
-        if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
-            dayNum = 31;
-        } else if (month == 2) {
-            dayNum = 28;
-        } else {
-            dayNum = 30;
+        //Calendar calendar = Calendar.getInstance();
+        //month = calendar.get(Calendar.MONTH) + 1;
+        int dayNum;
+        for (int m = 1; m <= 12; ++m) {
+            if (m == 1 || m == 3 || m == 5 || m == 7 || m == 8 || m == 10 || m == 12) {
+                dayNum = 31;
+            } else if (m == 2) {
+                dayNum = 28;
+            } else {
+                dayNum = 30;
+            }
+            recordData[m] = mGetRecord.queryByMonth(Integer.toString(m), dayNum);
         }
-        recordData = mGetRecord.queryByMonth(Integer.toString(month), dayNum);
 
         btn_left = findViewById(R.id.left);
         btn_right = findViewById(R.id.right);
@@ -146,8 +145,7 @@ public class CalendarPage extends Activity {
                 Intent i = new Intent();
                 int d;
                 d = date.getDay();
-                recordData = mGetRecord.queryByMonth(Integer.toString(month), dayNum);
-                if (recordData[d]) {
+                if (recordData[date.month][d]) {
                     i.setClass(CalendarPage.this, Record.class);
                     i.putExtra("date", date.month + "-" + date.day); // yourDate的格式和readLog()一样
                     CalendarPage.this.startActivity(i);
@@ -169,10 +167,21 @@ public class CalendarPage extends Activity {
         HashMap<String, String> markData = new HashMap<>();
         //1表示红点，0表示灰点，只在日历上标注出灰点表示没有打卡的日期
         String s;
-        for (int i = 1; i <= dayNum; i++) {
-            if (recordData[i]) {
-                s = "2019-" + month + "-" + i;
-                markData.put(s, "1");
+        int dayNum;
+        for (int m = 1; m <= 12; m++) {
+            if (m == 1 || m == 3 || m == 5 || m == 7 || m == 8 || m == 10 || m == 12) {
+                dayNum = 31;
+            } else if (m == 2) {
+                dayNum = 28;
+            } else {
+                dayNum = 30;
+            }
+            for (int i = 1; i <= dayNum; i++) {
+                // 其实把dayNum直接设定成31效率更高
+                if (recordData[m][i]) {
+                    s = "2019-" + m + "-" + i;
+                    markData.put(s, "1");
+                }
             }
         }
         calendarAdapter.setMarkData(markData);
@@ -236,8 +245,8 @@ public class CalendarPage extends Activity {
             @Override
             public void onTimeSelect(Date date, View v) {//选中事件回调
                 Toast.makeText(CalendarPage.this, "设置成功！", Toast.LENGTH_SHORT).show();
-                mGetRecord.updatePunch(getTime(date));
-                startgosleep();
+                mGetRecord.updateRemind(getTime(date));
+                startGoSleepService();
             }
         })
                 .setType(new boolean[]{false, false, false, true, true, false})// 默认全部显示
@@ -299,30 +308,6 @@ public class CalendarPage extends Activity {
         CalendarPage.this.finish();
     }
 
-    //向左切换睡眠记录
-    public void ClickLeft(View v) {
-        if (month == 0) {
-            left_invisible = true;
-            btn_left.setVisibility(View.INVISIBLE);
-        }
-        if (right_invisible) {
-            right_invisible = false;
-            btn_right.setVisibility(View.VISIBLE);
-        }
-    }
-
-    //向右切换睡眠记录
-    public void ClickRight(View v) {
-        if (month >= 12) {
-            right_invisible = true;
-            btn_right.setVisibility(View.INVISIBLE);
-        }
-        if (left_invisible) {
-            left_invisible = false;
-            btn_left.setVisibility(View.VISIBLE);
-        }
-    }
-
     //重写onWindowFocusChanged方法，使用此方法得知calendar和day的尺寸
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -353,16 +338,17 @@ public class CalendarPage extends Activity {
         return new SimpleDateFormat("HH:mm", Locale.getDefault()).format(date);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-    public void startgosleep(){
+    public void startGoSleepService() {
         Intent ifSleepIntent = new Intent(this, GoSleepService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             this.startForegroundService(ifSleepIntent);
         } else {
             this.startService(ifSleepIntent);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

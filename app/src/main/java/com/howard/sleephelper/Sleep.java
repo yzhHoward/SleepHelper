@@ -87,6 +87,7 @@ public class Sleep extends Activity {
         setContentView(R.layout.sleep);
         //mJobManager = JobSchedulerManager.getJobSchedulerInstance(this);
         //mJobManager.startJobScheduler();
+        stopGoSleepService();
 
         initView();
         initMedia();
@@ -241,12 +242,12 @@ public class Sleep extends Activity {
         stopService(intent);
     }
 
-    private void startGosleepService() {
+    private void startGoSleepService() {
         Intent intent = new Intent(Sleep.this, GoSleepService.class);
         startService(intent);
     }
 
-    private void stopGosleepService() {
+    private void stopGoSleepService() {
         Intent intent = new Intent(Sleep.this, GoSleepService.class);
         stopService(intent);
     }

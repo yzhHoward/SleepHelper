@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.KeyEvent;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import com.howard.sleephelper.database.GetRecord;
 import com.howard.sleephelper.database.RecordBean;
+import com.howard.sleephelper.service.GoSleepService;
 
 import java.util.Random;
 
@@ -34,7 +36,7 @@ public class MainActivity extends Activity {
 
         readLog();
         initView();
-
+        startGoSleepService();
     }
 
     //设置随机背景
@@ -95,6 +97,15 @@ public class MainActivity extends Activity {
                 MainActivity.this.startActivity(i);
                 MainActivity.this.finish();
             }
+        }
+    }
+
+    public void startGoSleepService() {
+        Intent ifSleepIntent = new Intent(this, GoSleepService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            this.startForegroundService(ifSleepIntent);
+        } else {
+            this.startService(ifSleepIntent);
         }
     }
 

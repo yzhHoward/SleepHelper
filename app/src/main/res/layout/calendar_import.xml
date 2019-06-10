@@ -17,7 +17,7 @@
             android:layout_height="300dp"
             android:background="#fff"
             app:layout_anchor="@+id/list"
-            app:layout_anchorGravity="top|center"></com.ldf.calendar.view.MonthPager>
+            app:layout_anchorGravity="top|center" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list"

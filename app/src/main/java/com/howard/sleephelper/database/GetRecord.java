@@ -143,7 +143,7 @@ public class GetRecord {
         String date;
         for (int i = 1; i <= days; ++i) {
             date = month + "-" + i;
-            result[i] = recordBeanDao.queryBuilder().where(RecordBeanDao.Properties.Date.eq(date)).build().list().size() > 0;
+            result[i] = !recordBeanDao.queryBuilder().where(RecordBeanDao.Properties.Date.eq(date)).build().list().isEmpty();
         }
         return result;
     }
@@ -170,7 +170,7 @@ public class GetRecord {
      *
      * @param time 时间
      */
-    public void updatePunch(String time) {
+    public void updateRemind(String time) {
         if (remindBeanDao.queryBuilder().list().isEmpty()) {
             remindBeanDao.insert(new RemindBean(null, "22:00"));
         }
