@@ -246,6 +246,7 @@ public class CalendarPage extends Activity {
             public void onTimeSelect(Date date, View v) {//选中事件回调
                 Toast.makeText(CalendarPage.this, "设置成功！", Toast.LENGTH_SHORT).show();
                 mGetRecord.updateRemind(getTime(date));
+                stopGoSleepService();
                 startGoSleepService();
             }
         })
@@ -345,6 +346,11 @@ public class CalendarPage extends Activity {
         } else {
             this.startService(ifSleepIntent);
         }
+    }
+
+    public void stopGoSleepService() {
+        Intent ifSleepIntent = new Intent(this, GoSleepService.class);
+        this.stopService(ifSleepIntent);
     }
 
     @Override

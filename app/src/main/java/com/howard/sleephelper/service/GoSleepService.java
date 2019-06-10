@@ -19,25 +19,32 @@ import java.util.TimerTask;
 import static com.howard.sleephelper.database.GetRecord.getRecord;
 
 public class GoSleepService extends Service {
-    boolean notification_on = false;
     NotificationManager mManager;
     Notification.Builder sleep;
+
+    GetRecord myGet;
+
     int hour;
     int min;
     boolean ifSleep = false;
+    boolean notification_on = false;
+
+    Timer timer;
     TimerTask timerTask = new TimerTask() {
         @Override
         public void run() {
+            //Log.e(TAG, "run: "+hour+":"+min );
             if (!ifSleep && !notification_on) {
                 Calendar now = Calendar.getInstance();
-                if ((now.get(Calendar.HOUR_OF_DAY)) > hour && (now.get(Calendar.MINUTE)) > min) {
+                if ((now.get(Calendar.HOUR_OF_DAY)) >= hour && (now.get(Calendar.MINUTE)) >= min) {
+                    // Log.e(TAG, "notice go" );
                     mManager.notify(2, sleep.build());
                     notification_on = true;
                 }
             }
         }
     };
-    Timer timer = new Timer();
+
 
     /**
      * 初始化，顺便获取当天是否已经睡觉记录，如已睡觉则不再提醒。
@@ -45,17 +52,27 @@ public class GoSleepService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        GetRecord myGet = getRecord();
+        myGet = getRecord();
+        mManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        sleep = createNotification();
+        /*startForeground(3, createMyNotification().build());
+        mManager.cancel(3);*/
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException ignored) {
+        }
         String remind = myGet.getRemind();
         String[] res = remind.split(":");
         hour = Integer.parseInt(res[0]);
         min = Integer.parseInt(res[1]);
-        mManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        sleep = createNotification();
         ifSleep = ifSleepToday();
-        /*startForeground(3, createMyNotification().build());
-        mManager.cancel(3);*/
-        timer.schedule(timerTask, 0, 3000);
+        timer = new Timer();
+        timer.schedule(timerTask, 0, 10000);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_STICKY;
     }
 
     //此为开机自自启成功与否测试
@@ -87,7 +104,7 @@ public class GoSleepService extends Service {
         builder.setSmallIcon(R.drawable.sleep_1)
                 .setContentTitle("睡眠助手")
                 .setContentText("小助手提醒您该睡觉啦")
-                .setOngoing(true)
+                //.setOngoing(true)
                 .setDefaults(NotificationCompat.DEFAULT_ALL).setOngoing(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -119,6 +136,7 @@ public class GoSleepService extends Service {
 
     @Override
     public void onDestroy() {
+        timer.cancel();
         mManager.cancel(2);
         super.onDestroy();
     }
