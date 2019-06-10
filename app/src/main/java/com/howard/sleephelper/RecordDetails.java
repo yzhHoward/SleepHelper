@@ -109,8 +109,8 @@ public class RecordDetails extends Activity {
     public void ClickLeft(View v) {
         mRecord = records.get(--idx);
         setText();
-        mDrawLineChart.setRecord(mRecord);
-        mDrawPieChart.setRecord(mRecord);
+        mDrawPieChart = new DrawPieChart(mPieChart, mRecord, getResources());
+        mDrawLineChart = new DrawLineChart(mLineChart, mRecord, getResources());
         if (idx == 0) {
             left_invisible = true;
             btn_left.setVisibility(View.INVISIBLE);
@@ -125,8 +125,8 @@ public class RecordDetails extends Activity {
     public void ClickRight(View v) {
         mRecord = records.get(++idx);
         setText();
-        mDrawLineChart.setRecord(mRecord);
-        mDrawPieChart.setRecord(mRecord);
+        mDrawPieChart = new DrawPieChart(mPieChart, mRecord, getResources());
+        mDrawLineChart = new DrawLineChart(mLineChart, mRecord, getResources());
         if (idx >= max) {
             right_invisible = true;
             btn_right.setVisibility(View.INVISIBLE);
