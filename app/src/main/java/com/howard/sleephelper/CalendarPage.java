@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -341,11 +340,12 @@ public class CalendarPage extends Activity {
 
     public void startGoSleepService() {
         Intent ifSleepIntent = new Intent(this, GoSleepService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             this.startForegroundService(ifSleepIntent);
         } else {
             this.startService(ifSleepIntent);
-        }
+        }*/
+        this.startService(ifSleepIntent);
     }
 
     public void stopGoSleepService() {

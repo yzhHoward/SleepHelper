@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.KeyEvent;
@@ -102,11 +101,12 @@ public class MainActivity extends Activity {
 
     public void startGoSleepService() {
         Intent ifSleepIntent = new Intent(this, GoSleepService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             this.startForegroundService(ifSleepIntent);
         } else {
             this.startService(ifSleepIntent);
-        }
+        }*/
+        this.startService(ifSleepIntent);
     }
 
     @Override

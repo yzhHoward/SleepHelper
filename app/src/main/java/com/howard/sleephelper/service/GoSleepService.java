@@ -30,20 +30,6 @@ public class GoSleepService extends Service {
     boolean notification_on = false;
 
     Timer timer;
-    TimerTask timerTask = new TimerTask() {
-        @Override
-        public void run() {
-            //Log.e(TAG, "run: "+hour+":"+min );
-            if (!ifSleep && !notification_on) {
-                Calendar now = Calendar.getInstance();
-                if ((now.get(Calendar.HOUR_OF_DAY)) >= hour && (now.get(Calendar.MINUTE)) >= min) {
-                    // Log.e(TAG, "notice go" );
-                    mManager.notify(2, sleep.build());
-                    notification_on = true;
-                }
-            }
-        }
-    };
 
 
     /**
@@ -66,12 +52,26 @@ public class GoSleepService extends Service {
         hour = Integer.parseInt(res[0]);
         min = Integer.parseInt(res[1]);
         ifSleep = ifSleepToday();
-        timer = new Timer();
-        timer.schedule(timerTask, 0, 10000);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                //Log.e(TAG, "run: "+hour+":"+min );
+                if (!ifSleep && !notification_on) {
+                    Calendar now = Calendar.getInstance();
+                    if ((now.get(Calendar.HOUR_OF_DAY)) >= hour && (now.get(Calendar.MINUTE)) >= min) {
+                        // Log.e(TAG, "notice go" );
+                        mManager.notify(2, sleep.build());
+                        notification_on = true;
+                    }
+                }
+            }
+        };
+        timer = new Timer();
+        timer.schedule(timerTask, 0, 30000);
         return START_STICKY;
     }
 
@@ -104,7 +104,7 @@ public class GoSleepService extends Service {
         builder.setSmallIcon(R.drawable.sleep_1)
                 .setContentTitle("睡眠助手")
                 .setContentText("小助手提醒您该睡觉啦")
-                //.setOngoing(true)
+                .setOngoing(true)
                 .setDefaults(NotificationCompat.DEFAULT_ALL).setOngoing(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
