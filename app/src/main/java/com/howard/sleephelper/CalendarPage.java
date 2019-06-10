@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -23,6 +24,7 @@ import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.howard.sleephelper.calendarInfo.CustomDayView;
 import com.howard.sleephelper.database.GetRecord;
+import com.howard.sleephelper.service.GoSleepService;
 import com.ldf.calendar.component.CalendarAttr;
 import com.ldf.calendar.component.CalendarViewAdapter;
 import com.ldf.calendar.interf.OnSelectDateListener;
@@ -235,6 +237,7 @@ public class CalendarPage extends Activity {
             public void onTimeSelect(Date date, View v) {//选中事件回调
                 Toast.makeText(CalendarPage.this, "设置成功！", Toast.LENGTH_SHORT).show();
                 mGetRecord.updatePunch(getTime(date));
+                startgosleep();
             }
         })
                 .setType(new boolean[]{false, false, false, true, true, false})// 默认全部显示
@@ -353,5 +356,13 @@ public class CalendarPage extends Activity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+    public void startgosleep(){
+        Intent ifSleepIntent = new Intent(this, GoSleepService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            this.startForegroundService(ifSleepIntent);
+        } else {
+            this.startService(ifSleepIntent);
+        }
     }
 }

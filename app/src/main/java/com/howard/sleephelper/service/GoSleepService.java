@@ -53,8 +53,8 @@ public class GoSleepService extends Service {
         mManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         sleep = createNotification();
         ifSleep = ifSleepToday();
-        startForeground(3, createMyNotification().build());
-        mManager.cancel(3);
+        /*startForeground(3, createMyNotification().build());
+        mManager.cancel(3);*/
         timer.schedule(timerTask, 0, 3000);
     }
 
@@ -87,6 +87,7 @@ public class GoSleepService extends Service {
         builder.setSmallIcon(R.drawable.sleep_1)
                 .setContentTitle("睡眠助手")
                 .setContentText("小助手提醒您该睡觉啦")
+                .setOngoing(true)
                 .setDefaults(NotificationCompat.DEFAULT_ALL).setOngoing(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
